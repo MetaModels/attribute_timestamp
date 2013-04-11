@@ -42,4 +42,28 @@ class MetaModelAttributeTimestamp extends MetaModelAttributeNumeric
 			'timetype'
 		));
 	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function valueToWidget($varValue)
+	{
+		if ($varValue === null) return '';
+		if ($varValue != 0) return $varValue;
+
+		//we need to parse the 0 timestamp manually because the widget will display an empty string
+		$strDateType = $this->get('timetype');
+		$strDateType = empty($strDateType) ? 'date' : $strDateType;
+		$strDateType = ($strDateType == 'date')? $GLOBALS['TL_CONFIG']['dateFormat'] : $GLOBALS['TL_CONFIG']['datimFormat'];
+		return date($strDateType, $varValue);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function widgetToValue($varValue, $intId)
+	{
+		return ($varValue === '')?  null : $varValue;
+	}
+
 }
