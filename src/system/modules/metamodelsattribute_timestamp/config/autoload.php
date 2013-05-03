@@ -23,3 +23,11 @@ ClassLoader::addClasses(array
 (
 	'MetaModelAttributeTimestamp'         => 'system/modules/metamodelsattribute_timestamp/MetaModelAttributeTimestamp.php',
 ));
+
+/**
+ * Register the templates
+ */
+TemplateLoader::addFiles(array
+(
+	'mm_attr_timestamp'                   => 'system/modules/metamodelsattribute_timestamp/templates',
+));
