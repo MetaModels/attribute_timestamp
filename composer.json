@@ -40,12 +40,23 @@
 	"require":{
 		"php":">=5.3",
 		"contao/core":"~2.11",
+		"contao-community-alliance/composer-installer": "dev-master",
 		"metamodels/core":"~1"
+	},
+	"require-dev": {
+		"metamodels/php-coding-standard":"dev-master",
+		"cyberspectrum/contao-toolbox": "dev-master"
 	},
 	"extra":{
 		"contao": {
 			"symlinks":{
 				"src/system/modules/metamodelsattribute_timestamp":"system/modules/metamodelsattribute_timestamp"
+			},
+			"transifex": {
+				"project": "metamodels",
+				"prefix": "attribute_timestamp-",
+				"languages_cto": "src/system/modules/metamodelsattribute_timestamp/languages",
+				"languages_tx": ".tx"
 			}
 		}
 	}
