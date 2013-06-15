@@ -16,7 +16,5 @@
  * @filesource
  */
 
-$GLOBALS['METAMODELS']['attributes']['timestamp'] = array(
-    'class' => 'MetaModelAttributeTimestamp',
-    'image' => 'system/modules/metamodelsattribute_timestamp/html/timestamp.png'
-);
+$GLOBALS['METAMODELS']['attributes']['timestamp']['class'] = 'MetaModelAttributeTimestamp';
+$GLOBALS['METAMODELS']['attributes']['timestamp']['image'] = 'system/modules/metamodelsattribute_timestamp/html/timestamp.png';
