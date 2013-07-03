@@ -14,3 +14,11 @@
 CREATE TABLE `tl_metamodel_attribute` (  
   `timetype` varchar(64) NOT NULL default ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Table `tl_metamodel_rendersetting`
+--
+
+CREATE TABLE `tl_metamodel_rendersetting` (
+  `timeformat` varchar(64) NOT NULL default ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
