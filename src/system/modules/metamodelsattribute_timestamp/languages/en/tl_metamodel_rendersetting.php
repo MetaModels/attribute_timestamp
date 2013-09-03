@@ -9,12 +9,18 @@
  * PHP version 5
  * @package    MetaModels
  * @subpackage AttributeTimestamp
- * @author     Stefan Heimes <stefan_heimes@hotmail.com>
- * @author     Andreas Isaak <info@andreas-isaak.de>
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @copyright  The MetaModels team.
  * @license    LGPL.
  * @filesource
  */
 
-$GLOBALS['METAMODELS']['attributes']['timestamp']['class'] = 'MetaModelAttributeTimestamp';
-$GLOBALS['METAMODELS']['attributes']['timestamp']['image'] = 'system/modules/metamodelsattribute_timestamp/html/timestamp.png';
+/**
+ * Fields
+ */
+$GLOBALS['TL_LANG']['tl_metamodel_rendersetting']['timeformat'] =  array('Format', 'Here you can define a custom date format. If empty, the default will be used. The format string will be parsed with the PHP date() function.');
+
+/**
+ * Legends
+ */
+$GLOBALS['TL_LANG']['tl_metamodel_rendersetting']['timesettings_legend'] = 'Date and time settings';

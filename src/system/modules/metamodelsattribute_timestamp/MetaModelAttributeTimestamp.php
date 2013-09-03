@@ -11,6 +11,7 @@
  * @subpackage AttributeTimestamp
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Andreas Isaak <info@andreas-isaak.de>
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @copyright  The MetaModels team.
  * @license    LGPL.
  * @filesource
@@ -23,6 +24,7 @@
  * @subpackage AttributeTimestamp
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Andreas Isaak <info@andreas-isaak.de>
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  */
 class MetaModelAttributeTimestamp extends MetaModelAttributeNumeric
 {
@@ -41,6 +43,44 @@ class MetaModelAttributeTimestamp extends MetaModelAttributeNumeric
 		return array_merge(parent::getAttributeSettingNames(), array(
 			'timetype'
 		));
+	}
+
+	/**
+	 * Prepare a template.
+	 *
+	 * @param MetaModelTemplate                $objTemplate The template being prepared.
+	 *
+	 * @param array                            $arrRowData  The row date of the item.
+	 *
+	 * @param IMetaModelRenderSettingAttribute $objSettings The render settings to use.
+	 *
+	 * @return void
+	 */
+	protected function prepareTemplate(MetaModelTemplate $objTemplate, $arrRowData, $objSettings = null)
+	{
+		parent::prepareTemplate($objTemplate, $arrRowData, $objSettings);
+
+		if ($objSettings->get('timeformat'))
+		{
+			$objTemplate->format = $objSettings->get('timeformat');
+		}
+		else
+		{
+			$strDateType   = $this->get('timetype');
+			$strFormatName = (empty($strDateType) ? 'date' : $strDateType) . 'Format';
+			if ($GLOBALS['objPage'] && $GLOBALS['objPage']->$strFormatName)
+			{
+				$objTemplate->format = $GLOBALS['objPage']->$strFormatName;
+			}
+			else
+			{
+				$objTemplate->format = $GLOBALS['TL_CONFIG'][$strFormatName];
+			}
+		}
+		if ($objTemplate->raw !== null)
+		{
+			$objTemplate->parsedDate = MetaModelController::getInstance()->parseDate($objTemplate->format, $objTemplate->raw);
+		}
 	}
 
 	/**
