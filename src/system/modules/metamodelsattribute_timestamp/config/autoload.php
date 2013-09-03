@@ -21,7 +21,9 @@
  */
 ClassLoader::addClasses(array
 (
-	'MetaModelAttributeTimestamp'         => 'system/modules/metamodelsattribute_timestamp/MetaModelAttributeTimestamp.php',
+	'MetaModels\Attribute\Timestamp\Timestamp' => 'system/modules/metamodelsattribute_timestamp/MetaModels/Attribute/Timestamp/Timestamp.php',
+
+	'MetaModelAttributeTimestamp'              => 'system/modules/metamodelsattribute_timestamp/deprecated/MetaModelAttributeTimestamp.php',
 ));
 
 /**

@@ -11,11 +11,17 @@
  * @subpackage AttributeTimestamp
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Andreas Isaak <info@andreas-isaak.de>
- * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @copyright  The MetaModels team.
  * @license    LGPL.
  * @filesource
  */
+
+namespace MetaModels\Attribute\Timestamp;
+
+use MetaModels\Attribute\Numeric\Numeric;
+use MetaModels\Helper\ContaoController;
+use MetaModels\Render\Template;
+use MetaModels\Render\Setting\ISimple;
 
 /**
  * This is the MetaModelAttribute class for handling text fields.
@@ -24,17 +30,16 @@
  * @subpackage AttributeTimestamp
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Andreas Isaak <info@andreas-isaak.de>
- * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  */
-class MetaModelAttributeTimestamp extends MetaModelAttributeNumeric
+class Timestamp extends Numeric
 {
 	public function getFieldDefinition($arrOverrides = array())
 	{
-		$strDateType = $this->get('timetype');
-
-		$arrFieldDef                 = parent::getFieldDefinition($arrOverrides);
-		$arrFieldDef['eval']['rgxp'] = empty($strDateType) ? 'date' : $strDateType;
+		$strDateType                       = $this->get('timetype');
+		$arrFieldDef                       = parent::getFieldDefinition($arrOverrides);
+		$arrFieldDef['eval']['rgxp']       = empty($strDateType) ? 'date' : $strDateType;
 		$arrFieldDef['eval']['datepicker'] = true;
+
 		return $arrFieldDef;
 	}
 
@@ -48,15 +53,15 @@ class MetaModelAttributeTimestamp extends MetaModelAttributeNumeric
 	/**
 	 * Prepare a template.
 	 *
-	 * @param MetaModelTemplate                $objTemplate The template being prepared.
+	 * @param \MetaModels\Render\Template        $objTemplate The template being prepared.
 	 *
-	 * @param array                            $arrRowData  The row date of the item.
+	 * @param array                              $arrRowData  The row date of the item.
 	 *
-	 * @param IMetaModelRenderSettingAttribute $objSettings The render settings to use.
+	 * @param \MetaModels\Render\Setting\ISimple $objSettings The render settings to use.
 	 *
 	 * @return void
 	 */
-	protected function prepareTemplate(MetaModelTemplate $objTemplate, $arrRowData, $objSettings = null)
+	protected function prepareTemplate(Template $objTemplate, $arrRowData, $objSettings = null)
 	{
 		parent::prepareTemplate($objTemplate, $arrRowData, $objSettings);
 
@@ -79,7 +84,7 @@ class MetaModelAttributeTimestamp extends MetaModelAttributeNumeric
 		}
 		if ($objTemplate->raw !== null)
 		{
-			$objTemplate->parsedDate = MetaModelController::getInstance()->parseDate($objTemplate->format, $objTemplate->raw);
+			$objTemplate->parsedDate = ContaoController::getInstance()->parseDate($objTemplate->format, $objTemplate->raw);
 		}
 	}
 
@@ -105,5 +110,4 @@ class MetaModelAttributeTimestamp extends MetaModelAttributeNumeric
 	{
 		return ($varValue === '')?  null : $varValue;
 	}
-
 }
