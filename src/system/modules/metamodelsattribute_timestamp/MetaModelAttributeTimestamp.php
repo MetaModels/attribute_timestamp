@@ -33,8 +33,10 @@ class MetaModelAttributeTimestamp extends MetaModelAttributeNumeric
 		$strDateType = $this->get('timetype');
 
 		$arrFieldDef                 = parent::getFieldDefinition($arrOverrides);
+
 		$arrFieldDef['eval']['rgxp'] = empty($strDateType) ? 'date' : $strDateType;
-		$arrFieldDef['eval']['datepicker'] = true;
+		$arrFieldDef['eval']['datepicker'] = ($strDateType == 'time') ? false : true;
+
 		return $arrFieldDef;
 	}
 
@@ -93,9 +95,18 @@ class MetaModelAttributeTimestamp extends MetaModelAttributeNumeric
 
 		//we need to parse the 0 timestamp manually because the widget will display an empty string
 		$strDateType = $this->get('timetype');
-		$strDateType = empty($strDateType) ? 'date' : $strDateType;
-		$strDateType = ($strDateType == 'date')? $GLOBALS['TL_CONFIG']['dateFormat'] : $GLOBALS['TL_CONFIG']['datimFormat'];
-		return date($strDateType, $varValue);
+
+		if($strDateType == 'time')
+		{
+			return $varValue;
+		}
+		else
+		{
+			$strDateType = empty($strDateType) ? 'date' : $strDateType;
+			$strDateType = ($strDateType == 'date')? $GLOBALS['TL_CONFIG']['dateFormat'] : $GLOBALS['TL_CONFIG']['datimFormat'];
+			
+			return date($strDateType, $varValue);
+		}
 	}
 
 	/**
