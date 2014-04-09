@@ -32,6 +32,7 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['timetype'] = array
 	'reference'          => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions'],
 	'options'            => array
 	(
+		'time',
 		'date',
 		'datim'
 	),

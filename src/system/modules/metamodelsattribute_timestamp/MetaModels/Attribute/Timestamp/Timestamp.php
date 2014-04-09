@@ -41,7 +41,7 @@ class Timestamp extends Numeric
 		$strDateType                       = $this->get('timetype');
 		$arrFieldDef                       = parent::getFieldDefinition($arrOverrides);
 		$arrFieldDef['eval']['rgxp']       = empty($strDateType) ? 'date' : $strDateType;
-		$arrFieldDef['eval']['datepicker'] = true;
+		$arrFieldDef['eval']['datepicker'] = ($strDateType == 'time') ? false : true;
 
 		return $arrFieldDef;
 	}
@@ -104,8 +104,15 @@ class Timestamp extends Numeric
 
 		// We need to parse the 0 timestamp manually because the widget will display an empty string.
 		$strDateType = $this->get('timetype');
+
+		if ($strDateType == 'time')
+		{
+			return $varValue;
+		}
+
 		$strDateType = empty($strDateType) ? 'date' : $strDateType;
 		$strDateType = ($strDateType == 'date')? $GLOBALS['TL_CONFIG']['dateFormat'] : $GLOBALS['TL_CONFIG']['datimFormat'];
+
 		return date($strDateType, $varValue);
 	}
 
