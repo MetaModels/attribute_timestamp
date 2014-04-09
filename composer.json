@@ -42,7 +42,8 @@
 		"contao/core": ">=2.11,<4.0",
 		"contao-community-alliance/composer-plugin": "*",
 		"metamodels/core":"~2.0.0",
-		"metamodels/attribute_numeric": "2.0.*@dev"
+		"metamodels/attribute_numeric": "2.0.*@dev",
+		"contao-community-alliance/events-contao-bindings": "*"
 	},
 	"require-dev": {
 		"metamodels/php-coding-standard":"dev-master",

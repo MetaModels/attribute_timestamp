@@ -18,8 +18,8 @@
 
 namespace MetaModels\Attribute\Timestamp;
 
+use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use MetaModels\Attribute\Numeric\Numeric;
-use MetaModels\Helper\ContaoController;
 use MetaModels\Render\Setting\ISimple;
 use MetaModels\Render\Template;
 
@@ -83,7 +83,12 @@ class Timestamp extends Numeric
 		}
 		if ($objTemplate->raw !== null)
 		{
-			$objTemplate->parsedDate = ContaoController::getInstance()->parseDate($objTemplate->format, $objTemplate->raw);
+			/** @var \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher */
+			$dispatcher = $GLOBALS['container']['event-dispatcher'];
+			$event      = new ParseDateEvent($objTemplate->raw, $objTemplate->format);
+
+			$dispatcher->dispatch($event);
+			$objTemplate->parsedDate = $event->getResult();
 		}
 	}
 
