@@ -46,13 +46,16 @@
 	},
 	"require-dev": {
 		"metamodels/php-coding-standard":"dev-master",
-		"cyberspectrum/contao-toolbox": "dev-master"
+		"cyberspectrum/contao-toolbox": "dev-master",
+		"phpunit/phpunit": ">=3.7.10,<4-dev"
 	},
 	"conflict": {
 		"contao/core": "3.0.*"
 	},
 	"autoload": {
-		"classmap": ["src"]
+		"psr-0": {
+			"MetaModels": "src/system/modules/metamodelsattribute_timestamp"
+		}
 	},
 	"extra":{
 		"contao": {
@@ -69,5 +72,6 @@
 		"branch-alias": {
 			"dev-tng": "2.0.x-dev"
 		}
-	}
+	},
+	"minimum-stability": "dev"
 }
