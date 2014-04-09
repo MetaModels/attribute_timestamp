@@ -17,16 +17,6 @@
  */
 
 /**
- * Register the classes
- */
-ClassLoader::addClasses(array
-(
-	'MetaModels\Attribute\Timestamp\Timestamp' => 'system/modules/metamodelsattribute_timestamp/MetaModels/Attribute/Timestamp/Timestamp.php',
-
-	'MetaModelAttributeTimestamp'              => 'system/modules/metamodelsattribute_timestamp/deprecated/MetaModelAttributeTimestamp.php',
-));
-
-/**
  * Register the templates
  */
 TemplateLoader::addFiles(array

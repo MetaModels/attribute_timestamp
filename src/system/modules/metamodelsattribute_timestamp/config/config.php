@@ -18,7 +18,3 @@
 
 $GLOBALS['METAMODELS']['attributes']['timestamp']['class'] = 'MetaModels\Attribute\Timestamp\Timestamp';
 $GLOBALS['METAMODELS']['attributes']['timestamp']['image'] = 'system/modules/metamodelsattribute_timestamp/html/timestamp.png';
-
-// non composerized Contao 2.X autoload support.
-$GLOBALS['MM_AUTOLOAD'][] = dirname(__DIR__);
-$GLOBALS['MM_AUTOLOAD'][] = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'deprecated';
