@@ -8,11 +8,12 @@
  *
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  *
- * last-updated: 2013-05-13T22:14:47+02:00
+ * last-updated: 2013-05-13T23:11:55+02:00
  */
 
-
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timesettings_legend']      = 'Date et heure';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetype']['0']            = 'Format';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetype']['1']            = 'Sélectionner le format désiré.';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['date']  = 'Date';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['datim'] = 'Date et heure';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['date']      = 'Date';

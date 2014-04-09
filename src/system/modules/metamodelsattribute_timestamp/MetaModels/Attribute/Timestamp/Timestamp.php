@@ -33,16 +33,22 @@ use MetaModels\Render\Setting\ISimple;
  */
 class Timestamp extends Numeric
 {
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getFieldDefinition($arrOverrides = array())
 	{
 		$strDateType                       = $this->get('timetype');
 		$arrFieldDef                       = parent::getFieldDefinition($arrOverrides);
 		$arrFieldDef['eval']['rgxp']       = empty($strDateType) ? 'date' : $strDateType;
-		$arrFieldDef['eval']['datepicker'] = true;
+		$arrFieldDef['eval']['datepicker'] = ($strDateType == 'time') ? false : true;
 
 		return $arrFieldDef;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getAttributeSettingNames()
 	{
 		return array_merge(parent::getAttributeSettingNames(), array(
@@ -51,20 +57,13 @@ class Timestamp extends Numeric
 	}
 
 	/**
-	 * Prepare a template.
-	 *
-	 * @param \MetaModels\Render\Template        $objTemplate The template being prepared.
-	 *
-	 * @param array                              $arrRowData  The row date of the item.
-	 *
-	 * @param \MetaModels\Render\Setting\ISimple $objSettings The render settings to use.
-	 *
-	 * @return void
+	 * {@inheritDoc}
 	 */
 	protected function prepareTemplate(Template $objTemplate, $arrRowData, $objSettings = null)
 	{
 		parent::prepareTemplate($objTemplate, $arrRowData, $objSettings);
 
+		/** @var ISimple $objSettings */
 		if ($objSettings->get('timeformat'))
 		{
 			$objTemplate->format = $objSettings->get('timeformat');
@@ -93,13 +92,27 @@ class Timestamp extends Numeric
 	 */
 	public function valueToWidget($varValue)
 	{
-		if ($varValue === null) return '';
-		if ($varValue != 0) return $varValue;
+		if ($varValue === null)
+		{
+			return '';
+		}
 
-		//we need to parse the 0 timestamp manually because the widget will display an empty string
+		if ($varValue != 0)
+		{
+			return $varValue;
+		}
+
+		// We need to parse the 0 timestamp manually because the widget will display an empty string.
 		$strDateType = $this->get('timetype');
+
+		if ($strDateType == 'time')
+		{
+			return $varValue;
+		}
+
 		$strDateType = empty($strDateType) ? 'date' : $strDateType;
 		$strDateType = ($strDateType == 'date')? $GLOBALS['TL_CONFIG']['dateFormat'] : $GLOBALS['TL_CONFIG']['datimFormat'];
+
 		return date($strDateType, $varValue);
 	}
 
