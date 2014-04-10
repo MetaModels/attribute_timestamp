@@ -19,7 +19,7 @@
 /**
  * Fields
  */
-$GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['date']      = 'Date';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['timestamp'] = 'Date';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timesettings_legend']      = 'Date and time';
 
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetype']                 = array('Schema', 'Here you can select the desired scheme.');
