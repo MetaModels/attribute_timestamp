@@ -26,19 +26,19 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['timestamp extends 
 
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['timetype'] = array
 (
-	'label'              => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetype'],
-	'exclude'            => true,
-	'inputType'          => 'select',
-	'reference'          => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions'],
-	'options'            => array
+	'label'               => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetype'],
+	'exclude'             => true,
+	'inputType'           => 'select',
+	'reference'           => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions'],
+	'options'             => array
 	(
 		'time',
 		'date',
 		'datim'
 	),
-	'eval' => array
+	'eval'                => array
 	(
 		'doNotSaveEmpty'  => true,
-		'tl_class'=>'w50'
+		'tl_class'        => 'w50'
 	)
 );
