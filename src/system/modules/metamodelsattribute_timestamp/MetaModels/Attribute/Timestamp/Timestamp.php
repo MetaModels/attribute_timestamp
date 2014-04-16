@@ -18,6 +18,7 @@
 
 namespace MetaModels\Attribute\Timestamp;
 
+use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use MetaModels\Attribute\Numeric\Numeric;
 use MetaModels\Render\Setting\ISimple;
@@ -87,7 +88,7 @@ class Timestamp extends Numeric
 			$dispatcher = $GLOBALS['container']['event-dispatcher'];
 			$event      = new ParseDateEvent($objTemplate->raw, $objTemplate->format);
 
-			$dispatcher->dispatch($event);
+			$dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);
 			$objTemplate->parsedDate = $event->getResult();
 		}
 	}
