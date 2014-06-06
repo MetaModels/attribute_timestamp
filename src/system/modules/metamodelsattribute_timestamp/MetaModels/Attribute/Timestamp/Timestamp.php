@@ -103,16 +103,31 @@ class Timestamp extends Numeric
 		}
 
 		// We need to parse the 0 timestamp manually because the widget will display an empty string.
-		$strDateType = $this->get('timetype');
-
-		if ($strDateType == 'time')
+		if ($varValue === 0 || $varValue === '')
 		{
-			return $varValue;
+			return '';
 		}
 
-		$strDateType = empty($strDateType) ? 'date' : $strDateType;
-		$strDateType = ($strDateType == 'date')? $GLOBALS['TL_CONFIG']['dateFormat'] : $GLOBALS['TL_CONFIG']['datimFormat'];
+		// Get the right format for the field.
+		switch ($this->get('timetype'))
+		{
+			case 'time':
+				$strDateType = $GLOBALS['TL_CONFIG']['timeFormat'];
+				break;
 
+			case 'date':
+				$strDateType = $GLOBALS['TL_CONFIG']['dateFormat'];
+				break;
+
+			case 'datim':
+				$strDateType = $GLOBALS['TL_CONFIG']['datimFormat'];
+				break;
+
+			default:
+				return $varValue;
+		}
+
+		// Return the data.
 		return date($strDateType, $varValue);
 	}
 
@@ -121,6 +136,14 @@ class Timestamp extends Numeric
 	 */
 	public function widgetToValue($varValue, $intId)
 	{
-		return ($varValue === '')?  null : $varValue;
+		// Check if we have some data.
+		if($varValue === '')
+		{
+			return null;
+		}
+
+		// Make a unix timestamp from the string.
+		$date = new \DateTime($varValue);
+		return $date->getTimestamp();
 	}
 }
