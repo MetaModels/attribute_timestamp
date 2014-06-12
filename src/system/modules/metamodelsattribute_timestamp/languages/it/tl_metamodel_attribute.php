@@ -8,9 +8,8 @@
  *
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  *
- * last-updated: 2013-05-04T02:35:45+02:00
+ * last-updated: 2013-07-10T10:07:46+02:00
  */
-
 
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timesettings_legend']      = 'Data e ora';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetype']['0']            = 'Schema';
@@ -18,3 +17,5 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetype']['1']            = 'Sel
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['date']  = 'Data';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['datim'] = 'Data e ora';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['date']      = 'Data';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['timestamp'] = 'Data';
+
