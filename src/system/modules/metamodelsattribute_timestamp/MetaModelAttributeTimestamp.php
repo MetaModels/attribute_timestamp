@@ -140,6 +140,12 @@ class MetaModelAttributeTimestamp extends MetaModelAttributeNumeric
 			return null;
 		}
 
+		// If numeric we have already a integer value.
+		if(is_numeric($varValue))
+		{
+			return intval($varValue);
+		}
+
 		// Make a unix timestamp from the string.
 		$date = new \DateTime($varValue);
 		return $date->getTimestamp();
