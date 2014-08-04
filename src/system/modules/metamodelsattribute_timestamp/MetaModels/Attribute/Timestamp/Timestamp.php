@@ -143,13 +143,13 @@ class Timestamp extends Numeric
 	public function widgetToValue($varValue, $intId)
 	{
 		// Check if we have some data.
-		if($varValue === '')
+		if ($varValue === '')
 		{
 			return null;
 		}
 
 		// If numeric we have already a integer value.
-		if(is_numeric($varValue))
+		if (is_numeric($varValue))
 		{
 			return intval($varValue);
 		}
