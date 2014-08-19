@@ -37,6 +37,14 @@ class Timestamp extends Numeric
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getSQLDataType()
+	{
+		return 'bigint(10) NULL default NULL';
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getFieldDefinition($arrOverrides = array())
 	{
 		$strDateType                       = $this->get('timetype');
