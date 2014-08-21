@@ -25,3 +25,4 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timesettings_legend']      = 'Dat
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetype']                 = array('Schema', 'Here you can select the desired scheme.');
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['date']  = 'Date';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['datim'] = 'Date and time';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['time']  = 'Time';
