@@ -90,7 +90,7 @@ class Timestamp extends Numeric
 				$objTemplate->format = $GLOBALS['TL_CONFIG'][$strFormatName];
 			}
 		}
-		if ($objTemplate->raw !== null)
+		if (!empty($objTemplate->raw))
 		{
 			/** @var \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher */
 			$dispatcher = $GLOBALS['container']['event-dispatcher'];
@@ -98,6 +98,10 @@ class Timestamp extends Numeric
 
 			$dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);
 			$objTemplate->parsedDate = $event->getResult();
+		}
+		else
+		{
+			$objTemplate->parsedDate = null;
 		}
 	}
 
