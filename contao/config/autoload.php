@@ -16,18 +16,10 @@
  * @filesource
  */
 
-$GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id']['timestamp'] = array
+/**
+ * Register the templates
+ */
+TemplateLoader::addFiles(array
 (
-	'presentation' => array(
-		'tl_class',
-	),
-	'functions' => array(
-		'mandatory',
-	),
-	'overview' => array(
-		'filterable',
-		'searchable',
-		'sortable',
-		'flag'
-	)
-);
+    'mm_attr_timestamp' => 'system/modules/metamodelsattribute_timestamp/templates',
+));

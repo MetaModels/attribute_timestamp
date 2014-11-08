@@ -12,7 +12,7 @@
 		 bootstrap="tests/bootstrap.php"
 		>
 	<testsuites>
-		<testsuite name="MetaModels core tests">
+		<testsuite name="MetaModels attribute timestamp tests">
 			<directory>./tests/MetaModels/</directory>
 		</testsuite>
 	</testsuites>
@@ -25,7 +25,7 @@
 
 	<filter>
 		<whitelist>
-			<directory>./src/system/modules/metamodelsattribute_timestamp/MetaModels/</directory>
+			<directory>./src/</directory>
 		</whitelist>
 	</filter>
 </phpunit>
