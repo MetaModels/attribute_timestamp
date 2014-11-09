@@ -169,7 +169,7 @@ class Timestamp extends Numeric
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    public function getObjPage()
+    protected function getObjPage()
     {
         return $GLOBALS['objPage'];
     }
@@ -182,7 +182,7 @@ class Timestamp extends Numeric
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    public function getConfigArray()
+    protected function getConfigArray()
     {
         return $GLOBALS['TL_CONFIG'];
     }
@@ -195,7 +195,7 @@ class Timestamp extends Numeric
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    public function getEventDispatcher()
+    protected function getEventDispatcher()
     {
         return $GLOBALS['container']['event-dispatcher'];
     }
