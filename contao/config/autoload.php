@@ -21,5 +21,5 @@
  */
 TemplateLoader::addFiles(array
 (
-	'mm_attr_timestamp'                   => 'system/modules/metamodelsattribute_timestamp/templates',
+    'mm_attr_timestamp'                   => 'system/modules/metamodelsattribute_timestamp/templates',
 ));

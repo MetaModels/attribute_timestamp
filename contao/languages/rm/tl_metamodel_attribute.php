@@ -18,4 +18,3 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['date']  = 'Dat
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['datim'] = 'Data e temp';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['date']      = 'Data';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['timestamp'] = 'Data';
-

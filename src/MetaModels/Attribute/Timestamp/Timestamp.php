@@ -34,140 +34,169 @@ use MetaModels\Render\Template;
  */
 class Timestamp extends Numeric
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getSQLDataType()
-	{
-		return 'bigint(10) NULL default NULL';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getSQLDataType()
+    {
+        return 'bigint(10) NULL default NULL';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldDefinition($arrOverrides = array())
-	{
-		$strDateType                       = $this->get('timetype');
-		$arrFieldDef                       = parent::getFieldDefinition($arrOverrides);
-		$arrFieldDef['eval']['rgxp']       = empty($strDateType) ? 'date' : $strDateType;
-		$arrFieldDef['eval']['datepicker'] = ($strDateType == 'time') ? false : true;
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldDefinition($arrOverrides = array())
+    {
+        $strDateType                       = $this->get('timetype');
+        $arrFieldDef                       = parent::getFieldDefinition($arrOverrides);
+        $arrFieldDef['eval']['rgxp']       = empty($strDateType) ? 'date' : $strDateType;
+        $arrFieldDef['eval']['datepicker'] = ($strDateType == 'time') ? false : true;
 
-		return $arrFieldDef;
-	}
+        return $arrFieldDef;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getAttributeSettingNames()
-	{
-		return array_merge(parent::getAttributeSettingNames(), array(
-			'timetype'
-		));
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getAttributeSettingNames()
+    {
+        return array_merge(parent::getAttributeSettingNames(), array(
+            'timetype'
+        ));
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function prepareTemplate(Template $objTemplate, $arrRowData, $objSettings = null)
-	{
-		parent::prepareTemplate($objTemplate, $arrRowData, $objSettings);
+    /**
+     * {@inheritDoc}
+     */
+    protected function prepareTemplate(Template $objTemplate, $arrRowData, $objSettings = null)
+    {
+        $objPage    = $this->getObjPage();
+        $arrConfig  = $this->getConfigArray();
+        $dispatcher = $this->getEventDispatcher();
 
-		/** @var ISimple $objSettings */
-		if ($objSettings->get('timeformat'))
-		{
-			$objTemplate->format = $objSettings->get('timeformat');
-		}
-		else
-		{
-			$strDateType   = $this->get('timetype');
-			$strFormatName = (empty($strDateType) ? 'date' : $strDateType) . 'Format';
-			if ($GLOBALS['objPage'] && $GLOBALS['objPage']->$strFormatName)
-			{
-				$objTemplate->format = $GLOBALS['objPage']->$strFormatName;
-			}
-			else
-			{
-				$objTemplate->format = $GLOBALS['TL_CONFIG'][$strFormatName];
-			}
-		}
-		if (!empty($objTemplate->raw))
-		{
-			/** @var \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher */
-			$dispatcher = $GLOBALS['container']['event-dispatcher'];
-			$event      = new ParseDateEvent($objTemplate->raw, $objTemplate->format);
+        parent::prepareTemplate($objTemplate, $arrRowData, $objSettings);
 
-			$dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);
-			$objTemplate->parsedDate = $event->getResult();
-		}
-		else
-		{
-			$objTemplate->parsedDate = null;
-		}
-	}
+        /** @var ISimple $objSettings */
+        if ($objSettings->get('timeformat')) {
+            $objTemplate->format = $objSettings->get('timeformat');
+        } else {
+            $strDateType   = $this->get('timetype');
+            $strFormatName = (empty($strDateType) ? 'date' : $strDateType) . 'Format';
+            if ($objPage && $objPage->$strFormatName) {
+                $objTemplate->format = $objPage->$strFormatName;
+            } else {
+                $objTemplate->format = $arrConfig[$strFormatName];
+            }
+        }
+        if (!empty($objTemplate->raw)) {
+            /** @var \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher */
+            $event = new ParseDateEvent($objTemplate->raw, $objTemplate->format);
+            $dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);
+            $objTemplate->parsedDate = $event->getResult();
+        } else {
+            $objTemplate->parsedDate = null;
+        }
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function valueToWidget($varValue)
-	{
-		if ($varValue === null)
-		{
-			return '';
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function valueToWidget($varValue)
+    {
+        $arrConfig = $this->getConfigArray();
 
-		if ($varValue != 0)
-		{
-			return $varValue;
-		}
+        if ($varValue === null) {
+            return '';
+        }
 
-		// We need to parse the 0 timestamp manually because the widget will display an empty string.
-		if ($varValue === 0 || $varValue === '')
-		{
-			return '';
-		}
+        if ($varValue != 0) {
+            return $varValue;
+        }
 
-		// Get the right format for the field.
-		switch ($this->get('timetype'))
-		{
-			case 'time':
-				$strDateType = $GLOBALS['TL_CONFIG']['timeFormat'];
-				break;
+        // We need to parse the 0 timestamp manually because the widget will display an empty string.
+        if ($varValue === 0 || $varValue === '') {
+            return '';
+        }
 
-			case 'date':
-				$strDateType = $GLOBALS['TL_CONFIG']['dateFormat'];
-				break;
+        // Get the right format for the field.
+        switch ($this->get('timetype')) {
+            case 'time':
+                $strDateType = $arrConfig['timeFormat'];
+                break;
 
-			case 'datim':
-				$strDateType = $GLOBALS['TL_CONFIG']['datimFormat'];
-				break;
+            case 'date':
+                $strDateType = $arrConfig['dateFormat'];
+                break;
 
-			default:
-				return $varValue;
-		}
+            case 'datim':
+                $strDateType = $arrConfig['datimFormat'];
+                break;
 
-		// Return the data.
-		return date($strDateType, $varValue);
-	}
+            default:
+                return $varValue;
+        }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function widgetToValue($varValue, $intId)
-	{
-		// Check if we have some data.
-		if ($varValue === '')
-		{
-			return null;
-		}
+        // Return the data.
+        return date($strDateType, $varValue);
+    }
 
-		// If numeric we have already a integer value.
-		if (is_numeric($varValue))
-		{
-			return intval($varValue);
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function widgetToValue($varValue, $intId)
+    {
+        // Check if we have some data.
+        if ($varValue === '') {
+            return null;
+        }
 
-		// Make a unix timestamp from the string.
-		$date = new \DateTime($varValue);
-		return $date->getTimestamp();
-	}
+        // If numeric we have already a integer value.
+        if (is_numeric($varValue)) {
+            return intval($varValue);
+        }
+
+        // Make a unix timestamp from the string.
+        $date = new \DateTime($varValue);
+
+        return $date->getTimestamp();
+    }
+
+    /**
+     * Returns the global page object (replacement for super globals access).
+     *
+     * @return mixed The global page object
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+     */
+    public function getObjPage()
+    {
+        return $GLOBALS['objPage'];
+    }
+
+    /**
+     * Returns the global TL_CONFIG array (replacement for super globals access).
+     *
+     * @return mixed The global config array
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+     */
+    public function getConfigArray()
+    {
+        return $GLOBALS['TL_CONFIG'];
+    }
+
+    /**
+     * Returns the event dispatcher (replacement for super globals access).
+     *
+     * @return mixed The event dispatcher
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+     */
+    public function getEventDispatcher()
+    {
+        return $GLOBALS['container']['event-dispatcher'];
+    }
 }

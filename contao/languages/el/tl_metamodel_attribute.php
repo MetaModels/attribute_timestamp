@@ -18,4 +18,3 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['date']  = 'Η�
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['datim'] = 'Ημερομηνια και ωρα';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['date']      = 'Ημερομηνια';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['timestamp'] = 'Ημερομηνια';
-
