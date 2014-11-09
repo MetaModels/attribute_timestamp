@@ -4,6 +4,6 @@
  For documentation visit:
    https://github.com/contao-community-alliance/build-system
 -->
-<project name="MetaModels attribute rating" default="build">
+<project name="MetaModels attribute timestamp" default="build">
     <import file="vendor/contao-community-alliance/build-system/ccabs.main.xml" />
 </project>
