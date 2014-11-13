@@ -31,5 +31,3 @@ if (
         'php composer.phar install'.PHP_EOL;
     exit(1);
 }
-
-$loader->add('MetaModels\Attribute\Timestamp\Test', __DIR__);
