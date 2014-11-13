@@ -16,8 +16,7 @@
  * @filesource
  */
 
-$GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id']['timestamp'] = array
-(
+$GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id']['timestamp'] = array(
     'presentation' => array(
         'tl_class',
     ),
@@ -28,6 +27,6 @@ $GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id'
         'filterable',
         'searchable',
         'sortable',
-        'flag'
-    )
+        'flag',
+    ),
 );

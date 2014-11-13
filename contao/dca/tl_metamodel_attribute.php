@@ -19,26 +19,22 @@
 /**
  * Table tl_metamodel_attribute
  */
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['timestamp extends _simpleattribute_'] = array
-(
-    'timesettings' => array('timetype')
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['timestamp extends _simpleattribute_'] = array(
+    'timesettings' => array('timetype'),
 );
 
-$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['timetype'] = array
-(
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['timetype'] = array(
     'label'               => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetype'],
     'exclude'             => true,
     'inputType'           => 'select',
     'reference'           => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions'],
-    'options'             => array
-    (
+    'options'             => array(
         'time',
         'date',
-        'datim'
+        'datim',
     ),
-    'eval'                => array
-    (
+    'eval'                => array(
         'doNotSaveEmpty'  => true,
-        'tl_class'        => 'w50'
-    )
+        'tl_class'        => 'w50',
+    ),
 );

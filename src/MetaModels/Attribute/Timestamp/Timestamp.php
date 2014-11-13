@@ -61,7 +61,7 @@ class Timestamp extends Numeric
     public function getAttributeSettingNames()
     {
         return array_merge(parent::getAttributeSettingNames(), array(
-            'timetype'
+            'timetype',
         ));
     }
 
@@ -81,7 +81,7 @@ class Timestamp extends Numeric
             $objTemplate->format = $objSettings->get('timeformat');
         } else {
             $strDateType   = $this->get('timetype');
-            $strFormatName = (empty($strDateType) ? 'date' : $strDateType) . 'Format';
+            $strFormatName = (empty($strDateType) ? 'date' : $strDateType).'Format';
             if ($objPage && $objPage->$strFormatName) {
                 $objTemplate->format = $objPage->$strFormatName;
             } else {

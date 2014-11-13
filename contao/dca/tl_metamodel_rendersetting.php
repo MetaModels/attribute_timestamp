@@ -18,18 +18,15 @@
 /**
  * Table tl_metamodel_attribute
  */
-$GLOBALS['TL_DCA']['tl_metamodel_rendersetting']['metapalettes']['timestamp extends default'] = array
-(
-    'timesettings' => array('timeformat')
+$GLOBALS['TL_DCA']['tl_metamodel_rendersetting']['metapalettes']['timestamp extends default'] = array(
+    'timesettings' => array('timeformat'),
 );
 
-$GLOBALS['TL_DCA']['tl_metamodel_rendersetting']['fields']['timeformat'] = array
-(
+$GLOBALS['TL_DCA']['tl_metamodel_rendersetting']['fields']['timeformat'] = array(
     'label'              => &$GLOBALS['TL_LANG']['tl_metamodel_rendersetting']['timeformat'],
     'exclude'            => true,
     'inputType'          => 'text',
-    'eval' => array
-    (
-        'tl_class'       => 'w50'
-    )
+    'eval' => array(
+        'tl_class'       => 'w50',
+    ),
 );
