@@ -18,4 +18,3 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['date']  = 'Dat
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['datim'] = 'Date et heure';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['date']      = 'Date';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['timestamp'] = 'Date';
-

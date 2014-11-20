@@ -12,7 +12,7 @@
 		 bootstrap="tests/bootstrap.php"
 		>
 	<testsuites>
-		<testsuite name="MetaModels core tests">
+		<testsuite name="MetaModels attribute timestamp tests">
 			<directory>./tests/MetaModels/</directory>
 		</testsuite>
 	</testsuites>
