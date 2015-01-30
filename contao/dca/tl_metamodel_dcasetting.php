@@ -28,7 +28,5 @@ $GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id'
     'overview' => array(
         'filterable',
         'searchable',
-        'sortable',
-        'flag',
     ),
 );
