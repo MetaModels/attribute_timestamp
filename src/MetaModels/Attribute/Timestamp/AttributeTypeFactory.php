@@ -9,7 +9,7 @@
  *
  * @package    MetaModels
  * @subpackage AttributeTimestamp
- * @author     Christopher Boelter <christopher@boelter.eu>
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @copyright  The MetaModels team.
  * @license    LGPL-3+
  * @filesource
