@@ -11,7 +11,7 @@
  * @subpackage Tests
  * @author     David Greminger <david.greminger@1up.io>
  * @copyright  The MetaModels team.
- * @license    LGPL.
+ * @license    LGPL-3+
  * @filesource
  */
 
@@ -43,20 +43,17 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
         $metaModel
             ->expects($this->any())
             ->method('getTableName')
-            ->will($this->returnValue('mm_unittest'))
-        ;
+            ->will($this->returnValue('mm_unittest'));
 
         $metaModel
             ->expects($this->any())
             ->method('getActiveLanguage')
-            ->will($this->returnValue($language))
-        ;
+            ->will($this->returnValue($language));
 
         $metaModel
             ->expects($this->any())
             ->method('getFallbackLanguage')
-            ->will($this->returnValue($fallbackLanguage))
-        ;
+            ->will($this->returnValue($fallbackLanguage));
 
         return $metaModel;
     }
