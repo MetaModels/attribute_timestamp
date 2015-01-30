@@ -68,7 +68,7 @@ class Timestamp extends Numeric
     /**
      * {@inheritDoc}
      */
-    protected function prepareTemplate(Template $objTemplate, $arrRowData, $objSettings = null)
+    protected function prepareTemplate(Template $objTemplate, $arrRowData, $objSettings)
     {
         $objPage    = $this->getObjPage();
         $arrConfig  = $this->getConfigArray();
@@ -143,7 +143,7 @@ class Timestamp extends Numeric
     /**
      * {@inheritdoc}
      */
-    public function widgetToValue($varValue, $intId)
+    public function widgetToValue($varValue, $itemId)
     {
         // Check if we have some data.
         if ($varValue === '') {
