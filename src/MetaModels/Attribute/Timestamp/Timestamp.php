@@ -174,7 +174,7 @@ class Timestamp extends Numeric
      */
     protected function getObjPage()
     {
-        return $GLOBALS['objPage'];
+        return isset($GLOBALS['objPage']) ? $GLOBALS['objPage'] : null;
     }
 
     /**
