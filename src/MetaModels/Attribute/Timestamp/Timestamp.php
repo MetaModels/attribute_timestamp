@@ -103,6 +103,8 @@ class Timestamp extends Numeric
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \RuntimeException When an invalid time format name is encountered.
      */
     public function valueToWidget($varValue)
     {
@@ -112,35 +114,16 @@ class Timestamp extends Numeric
             return '';
         }
 
-        if ($varValue != 0) {
-            return $varValue;
-        }
-
         // We need to parse the 0 timestamp manually because the widget will display an empty string.
         if ($varValue === 0 || $varValue === '') {
             return '';
         }
 
-        // Get the right format for the field.
-        switch ($this->get('timetype')) {
-            case 'time':
-                $strDateType = $arrConfig['timeFormat'];
-                break;
-
-            case 'date':
-                $strDateType = $arrConfig['dateFormat'];
-                break;
-
-            case 'datim':
-                $strDateType = $arrConfig['datimFormat'];
-                break;
-
-            default:
-                return $varValue;
+        if (!isset($arrConfig[$this->get('timetype') . 'Format'])) {
+            throw new \RuntimeException('Invalid time format name: ' . $this->get('timetype'));
         }
 
-        // Return the data.
-        return date($strDateType, $varValue);
+        return date($arrConfig[$this->get('timetype') . 'Format'], $varValue);
     }
 
     /**
