@@ -32,3 +32,42 @@ if (
         'php composer.phar install'.PHP_EOL;
     exit(1);
 }
+
+/**
+ * Return an unserialized array or the argument
+ * @param mixed
+ * @param boolean
+ * @return mixed
+ */
+function deserialize($varValue, $blnForceArray=false)
+{
+    // Already an array
+    if (is_array($varValue)) {
+        return $varValue;
+    }
+
+    // Null
+    if ($varValue === null) {
+        return $blnForceArray ? array() : null;
+    }
+
+    // Not a string
+    if (!is_string($varValue)) {
+        return $blnForceArray ? array($varValue) : $varValue;
+    }
+
+    // Empty string
+    if (trim($varValue) == '') {
+        return $blnForceArray ? array() : '';
+    }
+
+    $varUnserialized = @unserialize($varValue);
+
+    if (is_array($varUnserialized)) {
+        $varValue = $varUnserialized;
+    } elseif ($blnForceArray) {
+        $varValue = array($varValue);
+    }
+
+    return $varValue;
+}

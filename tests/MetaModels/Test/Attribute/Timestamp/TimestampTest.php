@@ -18,7 +18,9 @@
 
 namespace MetaModels\Test\Attribute\Timestamp;
 
+use Contao\TextField;
 use MetaModels\Attribute\Timestamp\Timestamp;
+use MetaModels\IMetaModel;
 
 /**
  * Unit tests to test class Timestamp.
@@ -26,12 +28,65 @@ use MetaModels\Attribute\Timestamp\Timestamp;
 class TimestampTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * The preserved timezone.
+     *
+     * @var string
+     */
+    private $timezone;
+
+    /**
+     * Preserve the timezone.
+     *
+     * @return void
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+     */
+    protected function setUp()
+    {
+        $this->timezone = date_default_timezone_get();
+        date_default_timezone_set('GMT');
+
+        if (!defined('TL_MODE')) {
+            define('TL_MODE', 'BE');
+            $this
+                ->getMockBuilder('Contao\\System')
+                ->setMockClassName('System')
+                ->setMethods(array('import'))
+                ->disableOriginalConstructor()
+                ->getMock();
+
+            class_alias('Contao\\Config', 'Config');
+            class_alias('Contao\\Controller', 'Controller');
+            class_alias('Contao\\BaseTemplate', 'BaseTemplate');
+            class_alias('Contao\\Widget', 'Widget');
+            class_alias('Contao\\Date', 'Date');
+            class_alias('Contao\\Validator', 'Validator');
+            // Some error strings for the validator.
+            $GLOBALS['TL_LANG']['ERR']['date']        = '%s';
+            $GLOBALS['TL_LANG']['ERR']['invalidDate'] = '%s';
+            $GLOBALS['TL_LANG']['ERR']['time']        = '%s';
+            $GLOBALS['TL_LANG']['ERR']['dateTime']    = '%s';
+        }
+    }
+
+    /**
+     * Restore the timezone.
+     *
+     * @return void
+     */
+    protected function tearDown()
+    {
+        date_default_timezone_set($this->timezone);
+    }
+
+    /**
      * Mock a MetaModel.
      *
      * @param string $language         The language.
      * @param string $fallbackLanguage The fallback language.
      *
-     * @return \MetaModels\IMetaModel
+     * @return IMetaModel
      */
     protected function mockMetaModel($language, $fallbackLanguage)
     {
@@ -60,13 +115,159 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Create the attribute with the given values.
+     *
+     * @param array           $data      The initialization array.
+     *
+     * @param null|IMetaModel $metaModel The MetaModel instance.
+     *
+     * @return Timestamp
+     */
+    protected function getAttribute($data, $metaModel = null)
+    {
+        return new Timestamp(
+            $metaModel ?: $this->mockMetaModel('en', 'en'),
+            array_replace_recursive(
+                array(
+                    'id'           => 1,
+                    'pid'          => 1,
+                    'tstamp'       => 0,
+                    'name'         => array(
+                        'en'       => 'name English',
+                        'de'       => 'name German',
+                    ),
+                    'description'  => array(
+                        'en'       => 'description English',
+                        'de'       => 'description German',
+                    ),
+                    'type'         => 'base',
+                    'colname'      => 'timestamp',
+                    'isvariant'    => 1,
+                    // Settings originating from tl_metamodel_dcasetting.
+                    'tl_class'     => 'custom_class',
+                    'readonly'     => 1
+                ),
+                $data
+            )
+        );
+    }
+
+    /**
      * Test that the attribute can be instantiated.
      *
      * @return void
      */
     public function testInstantiation()
     {
-        $text = new Timestamp($this->mockMetaModel('en', 'en'));
-        $this->assertInstanceOf('MetaModels\Attribute\Timestamp\Timestamp', $text);
+        $attribute = new Timestamp($this->mockMetaModel('en', 'en'));
+        $this->assertInstanceOf('MetaModels\Attribute\Timestamp\Timestamp', $attribute);
+    }
+
+    /**
+     * Provide the test sets.
+     *
+     * @return array
+     */
+    public function dataProvider()
+    {
+        return array(
+            array(
+                'type'     => 'date',
+                'format'   => 'd-m-Y',
+                'value'    => '01-01-2000',
+            ),
+            array(
+                'type'     => 'date',
+                'format'   => 'd-m-Y',
+                'value'    => '15-11-1980',
+            ),
+            array(
+                'type'     => 'datim',
+                'format'   => 'd-m-Y H:i:s',
+                'value'    => '15-11-1980 11:22:33',
+            ),
+            array(
+                'type'     => 'time',
+                'format'   => 'H:i:s',
+                'value'    => '11:22:33',
+            ),
+            array(
+                'type'     => 'time',
+                'format'   => 'H:i',
+                'value'    => '20:00',
+            ),
+        );
+    }
+
+    /**
+     * Test that the attribute can be instantiated.
+     *
+     * @param string $type   The date type.
+     *
+     * @param string $format The format string.
+     *
+     * @param string $value  The text value to use as post data.
+     *
+     * @return void
+     *
+     * @dataProvider dataProvider
+     */
+    public function testDateTime($type, $format, $value)
+    {
+        // Detect the widget bug and mark test skipped if encountered.
+        if ($type === 'time') {
+            try {
+                @TextField::getAttributesFromDca(array('eval' => array('rgxp' => 'time')), 'test', '11:22:33');
+            } catch (\OutOfBoundsException $exception) {
+                $this->markTestSkipped('Widget bug detected? See https://github.com/contao/core/pull/7721');
+                return;
+            }
+        }
+
+        $attribute       = $this->getAttribute(array('timetype' => $type));
+        $fieldDefinition = array_replace_recursive(
+            $attribute->getFieldDefinition(),
+            array(
+                'eval' => array(
+                    'submitOnChange' => false,
+                    'allowHtml'      => false,
+                    'rte'            => false,
+                    'preserveTags'   => false,
+                    'encrypt'        => false,
+                    'nullIfEmpty'    => false
+                ),
+                'options_callback'   => null,
+                'options'            => null,
+            )
+        );
+
+        \Contao\Config::set($type . 'Format', $format);
+        \Contao\Config::set('timeZone', 'GMT');
+
+        $dateTime  = new \DateTime($value, new \DateTimeZone(date_default_timezone_get()));
+        $timeStamp = $dateTime->getTimestamp();
+        $string    = $attribute->valueToWidget($timeStamp);
+
+        $prepared = TextField::getAttributesFromDca(
+            $fieldDefinition,
+            'test',
+            $value
+        );
+
+        $widget = $this->getMock('Contao\TextField', array('getPost'), array($prepared));
+        $widget->expects($this->any())->method('getPost')->will($this->returnValue($value));
+
+        /** @var TextField $widget */
+        $widget->validate();
+
+        $text = $widget->value;
+        $this->assertEquals($string, $text);
+
+        $converted = $attribute->widgetToValue($text, 1);
+        $this->assertEquals(
+            date($format, $timeStamp),
+            date($format, $converted),
+            date('d-m-Y h:i', $timeStamp) . ' <> ' . date('d-m-Y h:i', $converted)
+        );
     }
 }

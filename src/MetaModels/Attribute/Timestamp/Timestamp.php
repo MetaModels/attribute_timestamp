@@ -30,7 +30,7 @@ use MetaModels\Render\Template;
 /**
  * This is the MetaModelAttribute class for handling text fields.
  *
- * @package	   MetaModels
+ * @package    MetaModels
  * @subpackage AttributeTimestamp
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Andreas Isaak <info@andreas-isaak.de>
@@ -50,10 +50,10 @@ class Timestamp extends Numeric
      */
     public function getFieldDefinition($arrOverrides = array())
     {
-        $strDateType                       = $this->get('timetype');
+        $strDateType                       = $this->getDateTimeType();
         $arrFieldDef                       = parent::getFieldDefinition($arrOverrides);
-        $arrFieldDef['eval']['rgxp']       = empty($strDateType) ? 'date' : $strDateType;
-        $arrFieldDef['eval']['datepicker'] = ($strDateType == 'time') ? false : true;
+        $arrFieldDef['eval']['rgxp']       = $strDateType;
+        $arrFieldDef['eval']['datepicker'] = ($strDateType !== 'time');
 
         return $arrFieldDef;
     }
@@ -73,9 +73,7 @@ class Timestamp extends Numeric
      */
     protected function prepareTemplate(Template $objTemplate, $arrRowData, $objSettings)
     {
-        $objPage    = $this->getObjPage();
-        $arrConfig  = $this->getConfigArray();
-        $dispatcher = $this->getEventDispatcher();
+        $dispatcher = $this->getMetaModel()->getServiceContainer()->getEventDispatcher();
 
         parent::prepareTemplate($objTemplate, $arrRowData, $objSettings);
 
@@ -83,14 +81,9 @@ class Timestamp extends Numeric
         if ($objSettings->get('timeformat')) {
             $objTemplate->format = $objSettings->get('timeformat');
         } else {
-            $strDateType   = $this->get('timetype');
-            $strFormatName = (empty($strDateType) ? 'date' : $strDateType).'Format';
-            if ($objPage && $objPage->$strFormatName) {
-                $objTemplate->format = $objPage->$strFormatName;
-            } else {
-                $objTemplate->format = $arrConfig[$strFormatName];
-            }
+            $objTemplate->format = $this->getDateTimeFormatString();
         }
+
         if (!empty($objTemplate->raw)) {
             /** @var \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher */
             $event = new ParseDateEvent($objTemplate->raw, $objTemplate->format);
@@ -102,14 +95,38 @@ class Timestamp extends Numeric
     }
 
     /**
+     * Retrieve the selected type or fallback to 'date' if none selected.
+     *
+     * @return string
+     */
+    protected function getDateTimeType()
+    {
+        return $this->get('timetype') ?: 'date';
+    }
+
+    /**
+     * Retrieve the selected type or fallback to 'date' if none selected.
+     *
+     * @return string
+     */
+    protected function getDateTimeFormatString()
+    {
+        $format = $this->getDateTimeType() . 'Format';
+        $page   = $this->getObjPage();
+        if ($page && $page->$format) {
+            return $page->$format;
+        }
+
+        return \Config::get($format);
+    }
+
+    /**
      * {@inheritdoc}
      *
      * @throws \RuntimeException When an invalid time format name is encountered.
      */
     public function valueToWidget($varValue)
     {
-        $arrConfig = $this->getConfigArray();
-
         if ($varValue === null) {
             return '';
         }
@@ -119,11 +136,12 @@ class Timestamp extends Numeric
             return '';
         }
 
-        if (!isset($arrConfig[$this->get('timetype') . 'Format'])) {
-            throw new \RuntimeException('Invalid time format name: ' . $this->get('timetype'));
+        $format = \Config::get($this->getDateTimeType() . 'Format');
+        if (empty($format)) {
+            throw new \RuntimeException('Invalid time format name: ' . $this->getDateTimeType());
         }
 
-        return date($arrConfig[$this->get('timetype') . 'Format'], $varValue);
+        return date($format, $varValue);
     }
 
     /**
@@ -158,31 +176,5 @@ class Timestamp extends Numeric
     protected function getObjPage()
     {
         return isset($GLOBALS['objPage']) ? $GLOBALS['objPage'] : null;
-    }
-
-    /**
-     * Returns the global TL_CONFIG array (replacement for super globals access).
-     *
-     * @return mixed The global config array
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
-     */
-    protected function getConfigArray()
-    {
-        return $GLOBALS['TL_CONFIG'];
-    }
-
-    /**
-     * Returns the event dispatcher (replacement for super globals access).
-     *
-     * @return mixed The event dispatcher
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
-     */
-    protected function getEventDispatcher()
-    {
-        return $GLOBALS['container']['event-dispatcher'];
     }
 }
