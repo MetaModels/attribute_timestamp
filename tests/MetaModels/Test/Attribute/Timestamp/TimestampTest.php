@@ -55,10 +55,20 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
                 ->setMethods(array('import'))
                 ->disableOriginalConstructor()
                 ->getMock();
+            $this
+                ->getMockBuilder('Contao\\Config')
+                ->setMockClassName('Config')
+                ->setMethods(array('initialize', 'preload', 'markModified', 'save'))
+                ->disableOriginalConstructor()
+                ->getMock();
 
-            class_alias('Contao\\Config', 'Config');
             class_alias('Contao\\Controller', 'Controller');
-            class_alias('Contao\\BaseTemplate', 'BaseTemplate');
+            try {
+                class_alias('Contao\\BaseTemplate', 'BaseTemplate');
+            } catch (\Exception $exception) {
+                // BaseTemplate came available with Contao 3.3.
+            }
+
             class_alias('Contao\\Widget', 'Widget');
             class_alias('Contao\\Date', 'Date');
             class_alias('Contao\\Validator', 'Validator');
@@ -200,6 +210,27 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Set a config value.
+     *
+     * @param string $key   The name of the value.
+     *
+     * @param mixed  $value The value.
+     *
+     * @return void
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+     */
+    private function setConfigValue($key, $value)
+    {
+        if (!in_array('set', get_class_methods('Config'))) {
+            $GLOBALS['TL_CONFIG'][$key] = $value;
+        } else {
+            \Config::set($key, $value);
+        }
+    }
+
+    /**
      * Test that the attribute can be instantiated.
      *
      * @param string $type   The date type.
@@ -217,6 +248,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
         // Detect the widget bug and mark test skipped if encountered.
         if ($type === 'time') {
             try {
+                $this->setConfigValue('timeFormat', $format);
                 @TextField::getAttributesFromDca(array('eval' => array('rgxp' => 'time')), 'test', '11:22:33');
             } catch (\OutOfBoundsException $exception) {
                 $this->markTestSkipped('Widget bug detected? See https://github.com/contao/core/pull/7721');
@@ -236,13 +268,17 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
                     'encrypt'        => false,
                     'nullIfEmpty'    => false
                 ),
+                'activeRecord'   => null,
                 'options_callback'   => null,
                 'options'            => null,
             )
         );
+        $this->setConfigValue('dateFormat', 'd-m-Y');
+        $this->setConfigValue('timeFormat', 'h:i');
+        $this->setConfigValue('datimFormat', 'd-m-Y h:i');
 
-        \Contao\Config::set($type . 'Format', $format);
-        \Contao\Config::set('timeZone', 'GMT');
+        $this->setConfigValue($type . 'Format', $format);
+        $this->setConfigValue('timeZone', 'GMT');
 
         $dateTime  = new \DateTime($value, new \DateTimeZone(date_default_timezone_get()));
         $timeStamp = $dateTime->getTimestamp();
