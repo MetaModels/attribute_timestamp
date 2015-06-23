@@ -14,6 +14,7 @@
  * @author     Andreas Isaak <info@andreas-isaak.de>
  * @author     David Greminger <david.greminger@1up.io>
  * @author     David Maack <david.maack@arcor.de>
+ * @author     David Molineus <david.molineus@netzmacht.de>
  * @copyright  The MetaModels team.
  * @license    LGPL.
  * @filesource
@@ -163,6 +164,19 @@ class Timestamp extends Numeric
         $date = new \DateTime($varValue);
 
         return $date->getTimestamp();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFilterOptions($idList, $usedOnly, &$arrCount = null)
+    {
+        return array_map(
+            function ($value) {
+                return $this->valueToWidget($value);
+            },
+            parent::getFilterOptions($idList, $usedOnly, $arrCount)
+        );
     }
 
     /**
