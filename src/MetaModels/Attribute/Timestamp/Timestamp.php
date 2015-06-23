@@ -100,7 +100,7 @@ class Timestamp extends Numeric
      *
      * @return string
      */
-    protected function getDateTimeType()
+    public function getDateTimeType()
     {
         return $this->get('timetype') ?: 'date';
     }
@@ -110,7 +110,7 @@ class Timestamp extends Numeric
      *
      * @return string
      */
-    protected function getDateTimeFormatString()
+    public function getDateTimeFormatString()
     {
         $format = $this->getDateTimeType() . 'Format';
         $page   = $this->getObjPage();
@@ -123,57 +123,13 @@ class Timestamp extends Numeric
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \RuntimeException When an invalid time format name is encountered.
-     */
-    public function valueToWidget($varValue)
-    {
-        if ($varValue === null) {
-            return '';
-        }
-
-        // We need to parse the 0 timestamp manually because the widget will display an empty string.
-        if ($varValue === 0 || $varValue === '') {
-            return '';
-        }
-
-        $format = \Config::get($this->getDateTimeType() . 'Format');
-        if (empty($format)) {
-            throw new \RuntimeException('Invalid time format name: ' . $this->getDateTimeType());
-        }
-
-        return date($format, $varValue);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function widgetToValue($varValue, $itemId)
-    {
-        // Check if we have some data.
-        if ($varValue === '') {
-            return null;
-        }
-
-        // If numeric we have already a integer value.
-        if (is_numeric($varValue)) {
-            return intval($varValue);
-        }
-
-        // Make a unix timestamp from the string.
-        $date = new \DateTime($varValue);
-
-        return $date->getTimestamp();
-    }
-
-    /**
-     * {@inheritdoc}
      */
     public function getFilterOptions($idList, $usedOnly, &$arrCount = null)
     {
         return array_map(
             function ($value) {
-                return $this->valueToWidget($value);
+                // FIXME: Formatting should be done in the DCG instead.
+                return date($this->getDateTimeFormatString(), $value);
             },
             parent::getFilterOptions($idList, $usedOnly, $arrCount)
         );
