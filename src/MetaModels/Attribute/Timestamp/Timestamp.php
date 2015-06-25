@@ -124,6 +124,28 @@ class Timestamp extends Numeric
     /**
      * {@inheritdoc}
      */
+    public function widgetToValue($varValue, $itemId)
+    {
+        // Check if we have some data.
+        if ($varValue === '') {
+            return null;
+        }
+        // If numeric we have already a integer value.
+        if (is_numeric($varValue)) {
+            return intval($varValue);
+        }
+        /**
+         * @deprecated Parsing of string times is deprecated. Use the EncodePropertyValueFromWidgetEvent of the DCG
+         * instead.
+         */
+        // Make a unix timestamp from the string.
+        $date = new \DateTime($varValue);
+        return $date->getTimestamp();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getFilterOptions($idList, $usedOnly, &$arrCount = null)
     {
         return array_map(
