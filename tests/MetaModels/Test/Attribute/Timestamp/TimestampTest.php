@@ -11,6 +11,7 @@
  * @subpackage Tests
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Greminger <david.greminger@1up.io>
+ * @author     David Molineus <david.molineus@netzmacht.de>
  * @copyright  The MetaModels team.
  * @license    LGPL-3+
  * @filesource
@@ -282,7 +283,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
 
         $dateTime  = new \DateTime($value, new \DateTimeZone(date_default_timezone_get()));
         $timeStamp = $dateTime->getTimestamp();
-        $string    = $attribute->valueToWidget($timeStamp);
+        $converted = $attribute->valueToWidget($timeStamp);
 
         $prepared = TextField::getAttributesFromDca(
             $fieldDefinition,
@@ -297,7 +298,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
         $widget->validate();
 
         $text = $widget->value;
-        $this->assertEquals($string, $text);
+        $this->assertEquals($converted, $timeStamp);
 
         $converted = $attribute->widgetToValue($text, 1);
         $this->assertEquals(
