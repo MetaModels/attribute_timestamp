@@ -130,14 +130,14 @@ class Timestamp extends Numeric
         if ($varValue === '') {
             return null;
         }
+
         // If numeric we have already a integer value.
         if (is_numeric($varValue)) {
             return intval($varValue);
         }
-        /**
-         * @deprecated Parsing of string times is deprecated. Use the EncodePropertyValueFromWidgetEvent of the DCG
-         * instead.
-         */
+
+        // @deprecated Parsing of string times is deprecated. Use the EncodePropertyValueFromWidgetEvent of the DCG
+        // instead.
         // Make a unix timestamp from the string.
         $date = new \DateTime($varValue);
         return $date->getTimestamp();
