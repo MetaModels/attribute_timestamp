@@ -148,10 +148,14 @@ class Timestamp extends Numeric
      */
     public function getFilterOptions($idList, $usedOnly, &$arrCount = null)
     {
+        $dispatcher = $this->getMetaModel()->getServiceContainer()->getEventDispatcher();
+
         return array_map(
-            function ($value) {
-                // FIXME: Formatting should be done in the DCG instead.
-                return date($this->getDateTimeFormatString(), $value);
+            function ($value) use ($dispatcher) {
+                $event = new ParseDateEvent($value, $this->getDateTimeFormatString());
+                $dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);
+
+                return $event->getResult();
             },
             parent::getFilterOptions($idList, $usedOnly, $arrCount)
         );
