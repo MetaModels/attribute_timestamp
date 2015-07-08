@@ -14,6 +14,7 @@
  * @author     Andreas Isaak <info@andreas-isaak.de>
  * @author     David Greminger <david.greminger@1up.io>
  * @author     David Maack <david.maack@arcor.de>
+ * @author     David Molineus <david.molineus@netzmacht.de>
  * @copyright  The MetaModels team.
  * @license    LGPL.
  * @filesource
@@ -99,7 +100,7 @@ class Timestamp extends Numeric
      *
      * @return string
      */
-    protected function getDateTimeType()
+    public function getDateTimeType()
     {
         return $this->get('timetype') ?: 'date';
     }
@@ -109,7 +110,7 @@ class Timestamp extends Numeric
      *
      * @return string
      */
-    protected function getDateTimeFormatString()
+    public function getDateTimeFormatString()
     {
         $format = $this->getDateTimeType() . 'Format';
         $page   = $this->getObjPage();
@@ -118,30 +119,6 @@ class Timestamp extends Numeric
         }
 
         return \Config::get($format);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @throws \RuntimeException When an invalid time format name is encountered.
-     */
-    public function valueToWidget($varValue)
-    {
-        if ($varValue === null) {
-            return '';
-        }
-
-        // We need to parse the 0 timestamp manually because the widget will display an empty string.
-        if ($varValue === 0 || $varValue === '') {
-            return '';
-        }
-
-        $format = \Config::get($this->getDateTimeType() . 'Format');
-        if (empty($format)) {
-            throw new \RuntimeException('Invalid time format name: ' . $this->getDateTimeType());
-        }
-
-        return date($format, $varValue);
     }
 
     /**
@@ -159,10 +136,29 @@ class Timestamp extends Numeric
             return intval($varValue);
         }
 
+        // @deprecated Parsing of string times is deprecated. Use the EncodePropertyValueFromWidgetEvent of the DCG
+        // instead.
         // Make a unix timestamp from the string.
         $date = new \DateTime($varValue);
-
         return $date->getTimestamp();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFilterOptions($idList, $usedOnly, &$arrCount = null)
+    {
+        $dispatcher = $this->getMetaModel()->getServiceContainer()->getEventDispatcher();
+
+        return array_map(
+            function ($value) use ($dispatcher) {
+                $event = new ParseDateEvent($value, $this->getDateTimeFormatString());
+                $dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);
+
+                return $event->getResult();
+            },
+            parent::getFilterOptions($idList, $usedOnly, $arrCount)
+        );
     }
 
     /**
