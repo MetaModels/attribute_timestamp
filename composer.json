@@ -36,7 +36,7 @@
     "contao-community-alliance/composer-plugin": "~2.0",
     "metamodels/core": "~2.0",
     "metamodels/attribute_numeric": "~2.0",
-    "contao-community-alliance/events-contao-bindings": "*"
+    "contao-community-alliance/events-contao-bindings": "~3.2"
   },
   "require-dev": {
     "cyberspectrum/contao-toolbox": "~0.6",
@@ -69,7 +69,8 @@
       }
     },
     "branch-alias": {
-      "dev-tng": "2.0.x-dev"
+      "dev-master": "2.0.x-dev",
+      "dev-develop": "2.1.x-dev"
     }
   },
   "minimum-stability": "dev",
