@@ -149,10 +149,10 @@ class Timestamp extends Numeric
     public function getFilterOptions($idList, $usedOnly, &$arrCount = null)
     {
         $dispatcher = $this->getMetaModel()->getServiceContainer()->getEventDispatcher();
-
+        $format     = $this->getDateTimeFormatString();
         return array_map(
-            function ($value) use ($dispatcher) {
-                $event = new ParseDateEvent($value, $this->getDateTimeFormatString());
+            function ($value) use ($format, $dispatcher) {
+                $event = new ParseDateEvent($value, $format);
                 $dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);
 
                 return $event->getResult();

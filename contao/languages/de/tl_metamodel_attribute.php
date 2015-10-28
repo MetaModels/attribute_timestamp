@@ -8,7 +8,7 @@
  *
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  *
- * last-updated: 2013-07-10T12:11:13+02:00
+ * last-updated: 2015-07-11T04:12:39+02:00
  */
 
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timesettings_legend']      = 'Datum und Uhrzeit';
@@ -16,5 +16,7 @@ $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetype']['0']            = 'Sch
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetype']['1']            = 'Hier können die das gewünschte Schema auswählen.';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['date']  = 'Datum';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['datim'] = 'Datum und Uhrzeit';
+$GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions']['time']  = 'Zeit';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['date']      = 'Datum';
 $GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['timestamp'] = 'Datum';
+
