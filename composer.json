@@ -58,6 +58,9 @@
       "sources": {
         "contao": "system/modules/metamodelsattribute_timestamp"
       },
+      "runonce": [
+        "runonce/runonce.php"
+      ],
       "transifex": {
         "project": "metamodels",
         "prefix": "attribute_timestamp-",
