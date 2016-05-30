@@ -31,20 +31,17 @@
     "source": "https://github.com/MetaModels/attribute_timestamp"
   },
   "require": {
-    "php": ">=5.3",
-    "contao/core": ">=3.2,<3.6",
-    "contao-community-alliance/composer-plugin": "~2.0",
+    "php": ">=5.4",
+    "contao/core": "^3.5.5",
+    "contao-community-alliance/composer-plugin": "~2.4",
     "metamodels/core": "~2.0",
     "metamodels/attribute_numeric": "~2.0",
-    "contao-community-alliance/events-contao-bindings": "~3.2"
+    "contao-community-alliance/events-contao-bindings": "~3.5"
   },
   "require-dev": {
     "cyberspectrum/contao-toolbox": "~0.6",
     "phpcq/all-tasks": "~1.1",
     "metamodels/base-unit-tests": "~1.0"
-  },
-  "conflict": {
-    "contao/core": "3.4.0"
   },
   "autoload": {
     "psr-0": {
