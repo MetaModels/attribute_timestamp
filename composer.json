@@ -40,7 +40,7 @@
   },
   "require-dev": {
     "cyberspectrum/contao-toolbox": "~0.6",
-    "phpcq/all-tasks": "~1.0",
+    "phpcq/all-tasks": "~1.1",
     "metamodels/base-unit-tests": "~1.0"
   },
   "conflict": {
@@ -48,12 +48,12 @@
   },
   "autoload": {
     "psr-0": {
-      "MetaModels": "src"
+      "MetaModels\\": "src"
     }
   },
   "autoload-dev": {
     "psr-0": {
-      "MetaModels\\Test": "tests"
+      "MetaModels\\Test\\": "tests"
     }
   },
   "extra": {

@@ -1,23 +1,26 @@
 <?php
+
 /**
- * The MetaModels extension allows the creation of multiple collections of custom items,
- * each with its own unique set of selectable attributes, with attribute extendability.
- * The Front-End modules allow you to build powerful listing and filtering of the
- * data in each collection.
+ * This file is part of MetaModels/attribute_timestamp.
  *
- * PHP version 5
+ * (c) 2012-2016 The MetaModels team.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * This project is provided in good faith and hope to be usable by anyone.
  *
  * @package    MetaModels
  * @subpackage Tests
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
- * @copyright  The MetaModels team.
- * @license    LGPL-3+
+ * @copyright  2012-2016 The MetaModels team.
+ * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
 namespace MetaModels\Test\Attribute\Timestamp;
 
-use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\EncodePropertyValueFromWidgetEvent;
@@ -28,6 +31,9 @@ use MetaModels\Attribute\Timestamp\Timestamp;
 use MetaModels\IMetaModelsServiceContainer;
 use MetaModels\DcGeneral\Data\Model;
 
+/**
+ * This class tests the BackendSubscriber class.
+ */
 class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -40,7 +46,6 @@ class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
     private $metaModel;
 
     private $item;
-
 
     private $eventDispatcher;
 
