@@ -6,7 +6,10 @@ exclude:
   languages
 
 mapping:
-  Andreas Isaak <info@andreas-isaak.de>: Andreas Isaak <andy.jared@googlemail.com>
+  "Andreas Isaak <info@andreas-isaak.de>": "Andreas Isaak <andy.jared@googlemail.com>"
+  "Ingolf Steinhardt <info@e-spin.de>":
+    - "xantippe <info@e-spin.de>"
+    - "zonky2 <info@e-spin.de>"
 
 copy-left:
    "Stefan Heimes <stefan_heimes@hotmail.com>":

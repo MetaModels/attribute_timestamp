@@ -19,6 +19,7 @@
  * @author     David Maack <david.maack@arcor.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Henry Lamorski <henry.lamorski@mailbox.org>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
  * @copyright  2012-2017 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
@@ -50,10 +51,14 @@ class Timestamp extends AttributeNumeric
      */
     public function getFieldDefinition($arrOverrides = array())
     {
-        $strDateType                       = $this->getDateTimeType();
-        $arrFieldDef                       = parent::getFieldDefinition($arrOverrides);
-        $arrFieldDef['eval']['rgxp']       = $strDateType;
-        $arrFieldDef['eval']['datepicker'] = ($strDateType !== 'time');
+        $strDateType                 = $this->getDateTimeType();
+        $arrFieldDef                 = parent::getFieldDefinition($arrOverrides);
+        $arrFieldDef['eval']['rgxp'] = $strDateType;
+        
+        if (!empty($arrFieldDef['eval']['readonly'])) {
+            $arrFieldDef['eval']['datepicker'] = true;
+            $arrFieldDef['eval']['tl_class']  .= ' wizard';
+        }
 
         return $arrFieldDef;
     }
