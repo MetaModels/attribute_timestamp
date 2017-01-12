@@ -24,7 +24,7 @@ namespace MetaModels\Attribute\Timestamp;
 
 use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
-use MetaModels\Attribute\Numeric\Numeric;
+use MetaModels\Attribute\Numeric\AttributeNumeric;
 use MetaModels\Render\Setting\ISimple;
 use MetaModels\Render\Template;
 
@@ -36,7 +36,7 @@ use MetaModels\Render\Template;
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Andreas Isaak <info@andreas-isaak.de>
  */
-class Timestamp extends Numeric
+class Timestamp extends AttributeNumeric
 {
     /**
      * {@inheritDoc}
