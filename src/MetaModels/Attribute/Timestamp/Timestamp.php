@@ -1,12 +1,15 @@
 <?php
 
 /**
- * The MetaModels extension allows the creation of multiple collections of custom items,
- * each with its own unique set of selectable attributes, with attribute extendability.
- * The Front-End modules allow you to build powerful listing and filtering of the
- * data in each collection.
+ * This file is part of MetaModels/attribute_timestamp.
  *
- * PHP version 5
+ * (c) 2012-2017 The MetaModels team.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * This project is provided in good faith and hope to be usable by anyone.
+ *
  * @package    MetaModels
  * @subpackage AttributeTimestamp
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
@@ -15,8 +18,10 @@
  * @author     David Greminger <david.greminger@1up.io>
  * @author     David Maack <david.maack@arcor.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
- * @copyright  The MetaModels team.
- * @license    LGPL.
+ * @author     Henry Lamorski <henry.lamorski@mailbox.org>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2012-2017 The MetaModels team.
+ * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
@@ -24,19 +29,14 @@ namespace MetaModels\Attribute\Timestamp;
 
 use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
-use MetaModels\Attribute\Numeric\Numeric;
+use MetaModels\Attribute\Numeric\AttributeNumeric;
 use MetaModels\Render\Setting\ISimple;
 use MetaModels\Render\Template;
 
 /**
  * This is the MetaModelAttribute class for handling text fields.
- *
- * @package    MetaModels
- * @subpackage AttributeTimestamp
- * @author     Stefan Heimes <stefan_heimes@hotmail.com>
- * @author     Andreas Isaak <info@andreas-isaak.de>
  */
-class Timestamp extends Numeric
+class Timestamp extends AttributeNumeric
 {
     /**
      * {@inheritDoc}
@@ -51,10 +51,14 @@ class Timestamp extends Numeric
      */
     public function getFieldDefinition($arrOverrides = array())
     {
-        $strDateType                       = $this->getDateTimeType();
-        $arrFieldDef                       = parent::getFieldDefinition($arrOverrides);
-        $arrFieldDef['eval']['rgxp']       = $strDateType;
-        $arrFieldDef['eval']['datepicker'] = ($strDateType !== 'time');
+        $strDateType                 = $this->getDateTimeType();
+        $arrFieldDef                 = parent::getFieldDefinition($arrOverrides);
+        $arrFieldDef['eval']['rgxp'] = $strDateType;
+        
+        if (empty($arrFieldDef['eval']['readonly'])) {
+            $arrFieldDef['eval']['datepicker'] = true;
+            $arrFieldDef['eval']['tl_class']  .= ' wizard';
+        }
 
         return $arrFieldDef;
     }

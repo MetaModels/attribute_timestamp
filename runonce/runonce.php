@@ -13,28 +13,13 @@
  * @package    MetaModels
  * @subpackage AttributeTimestamp
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
+ * @author     Andreas Isaak <info@andreas-isaak.de>
+ * @author     David Greminger <david.greminger@1up.io>
  * @copyright  2012-2016 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-namespace MetaModels\Attribute\Timestamp;
-
-use MetaModels\Attribute\AbstractAttributeTypeFactory;
-
-/**
- * Attribute type factory for timestamp attributes.
- */
-class AttributeTypeFactory extends AbstractAttributeTypeFactory
-{
-    /**
-     * {@inheritDoc}
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->typeName  = 'timestamp';
-        $this->typeIcon  = 'system/modules/metamodelsattribute_timestamp/html/timestamp.png';
-        $this->typeClass = 'MetaModels\Attribute\Timestamp\Timestamp';
-    }
-}
+// Let our handler handle the necessary steps.
+$handler = new MetaModels\Attribute\Timestamp\Helper\UpgradeHandler(\Database::getInstance());
+$handler->perform();
