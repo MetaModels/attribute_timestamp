@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2016 The MetaModels team.
+ * (c) 2012-2017 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,7 +18,8 @@
  * @author     David Greminger <david.greminger@1up.io>
  * @author     David Maack <david.maack@arcor.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Henry Lamorski <henry.lamorski@mailbox.org>
+ * @copyright  2012-2017 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -27,14 +28,14 @@ namespace MetaModels\Attribute\Timestamp;
 
 use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
-use MetaModels\Attribute\Numeric\Numeric;
+use MetaModels\Attribute\Numeric\AttributeNumeric;
 use MetaModels\Render\Setting\ISimple;
 use MetaModels\Render\Template;
 
 /**
  * This is the MetaModelAttribute class for handling text fields.
  */
-class Timestamp extends Numeric
+class Timestamp extends AttributeNumeric
 {
     /**
      * {@inheritDoc}
