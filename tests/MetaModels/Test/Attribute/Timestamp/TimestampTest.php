@@ -310,4 +310,35 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
             date('d-m-Y h:i', $timeStamp) . ' <> ' . date('d-m-Y h:i', $converted)
         );
     }
+
+    /**
+     * Test that the date picker get's enabled when not read only.
+     *
+     * @return void
+     */
+    public function testEnableDatepickerWhenNotReadOnly()
+    {
+        $attribute  = $this->getAttribute(array('timetype' => 'date', 'readonly' => 0));
+        $definition = $attribute->getFieldDefinition();
+
+        $this->assertArrayHasKey('datepicker', $definition['eval']);
+        $this->assertArrayHasKey('tl_class', $definition['eval']);
+        $this->assertEquals(true, $definition['eval']['datepicker']);
+        $this->assertEquals('custom_class wizard', $definition['eval']['tl_class']);
+    }
+
+    /**
+     * Test that the date picker does not get enabled when read only.
+     *
+     * @return void
+     */
+    public function testDisableDatepickerWhenReadOnly()
+    {
+        $attribute  = $this->getAttribute(array('timetype' => 'date', 'readonly' => 1));
+        $definition = $attribute->getFieldDefinition();
+
+        $this->assertArrayNotHasKey('datepicker', $definition['eval']);
+        $this->assertArrayHasKey('tl_class', $definition['eval']);
+        $this->assertEquals('custom_class', $definition['eval']['tl_class']);
+    }
 }

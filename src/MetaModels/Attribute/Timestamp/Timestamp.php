@@ -55,7 +55,7 @@ class Timestamp extends AttributeNumeric
         $arrFieldDef                 = parent::getFieldDefinition($arrOverrides);
         $arrFieldDef['eval']['rgxp'] = $strDateType;
         
-        if (!empty($arrFieldDef['eval']['readonly'])) {
+        if (empty($arrFieldDef['eval']['readonly'])) {
             $arrFieldDef['eval']['datepicker'] = true;
             $arrFieldDef['eval']['tl_class']  .= ' wizard';
         }
