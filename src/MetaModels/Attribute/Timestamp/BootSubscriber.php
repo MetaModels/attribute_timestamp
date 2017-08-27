@@ -14,6 +14,7 @@
  * @subpackage AttributeTimestamp
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
+ * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @copyright  2012-2016 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
@@ -31,7 +32,7 @@ use MetaModels\DcGeneral\Events\BaseSubscriber;
 /**
  * Handles event operations for timestamp attributes.
  */
-class BackendSubscriber extends BaseSubscriber
+class BootSubscriber extends BaseSubscriber
 {
     /**
      * Register all listeners to handle creation of a data container.
