@@ -14,6 +14,7 @@
  * @subpackage Tests
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
+ * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @copyright  2012-2016 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
@@ -26,7 +27,7 @@ use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\Decod
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\EncodePropertyValueFromWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\EnvironmentInterface;
 use MetaModels\Attribute\IAttribute;
-use MetaModels\Attribute\Timestamp\BackendSubscriber;
+use MetaModels\Attribute\Timestamp\BootSubscriber;
 use MetaModels\Attribute\Timestamp\Timestamp;
 use MetaModels\IMetaModelsServiceContainer;
 use MetaModels\DcGeneral\Data\Model;
@@ -34,14 +35,14 @@ use MetaModels\DcGeneral\Data\Model;
 /**
  * This class tests the BackendSubscriber class.
  */
-class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
+class BootSubscriberTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * The backend subscriber being tested.
      *
-     * @var BackendSubscriber
+     * @var BootSubscriber
      */
-    private $backendSubscriber;
+    private $bootSubscriber;
 
     private $metaModel;
 
@@ -56,10 +57,10 @@ class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->eventDispatcher   = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
-        $this->backendSubscriber = new BackendSubscriber($this->mockServiceContainer());
-        $this->metaModel         = $this->getMock('MetaModels\IMetaModel');
-        $this->item              = $this->getMock('MetaModels\IItem', array(), array($this->metaModel));
+        $this->eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $this->bootSubscriber  = new BootSubscriber($this->mockServiceContainer());
+        $this->metaModel       = $this->getMock('MetaModels\IMetaModel');
+        $this->item            = $this->getMock('MetaModels\IItem', array(), array($this->metaModel));
     }
 
     /**
@@ -107,8 +108,7 @@ class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $model = $this->getMock(
             'MetaModels\DcGeneral\Data\Model',
-            array(
-            ),
+            array(),
             array(
                 $this->item
             )
@@ -167,8 +167,8 @@ class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     public function it_is_initializable()
     {
-        $subscriber = new BackendSubscriber($this->mockServiceContainer());
-        $this->assertInstanceOf('MetaModels\Attribute\Timestamp\BackendSubscriber', $subscriber);
+        $subscriber = new BootSubscriber($this->mockServiceContainer());
+        $this->assertInstanceOf('MetaModels\Attribute\Timestamp\BootSubscriber', $subscriber);
     }
 
     /**
@@ -180,24 +180,24 @@ class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(
-                'format'   => 'd-m-Y',
-                'value'    => '01-01-2000',
+                'format' => 'd-m-Y',
+                'value'  => '01-01-2000',
             ),
             array(
-                'format'   => 'd-m-Y',
-                'value'    => '15-11-1980',
+                'format' => 'd-m-Y',
+                'value'  => '15-11-1980',
             ),
             array(
-                'format'   => 'd-m-Y H:i:s',
-                'value'    => '15-11-1980 11:22:33',
+                'format' => 'd-m-Y H:i:s',
+                'value'  => '15-11-1980 11:22:33',
             ),
             array(
-                'format'   => 'H:i:s',
-                'value'    => '11:22:33',
+                'format' => 'H:i:s',
+                'value'  => '11:22:33',
             ),
             array(
-                'format'   => 'H:i',
-                'value'    => '20:00',
+                'format' => 'H:i',
+                'value'  => '20:00',
             ),
         );
     }
@@ -213,7 +213,8 @@ class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     public function it_parses_timestamp_for_widget($format, $value)
     {
-        $valuesBag = $this->getMock('ContaoCommunityAlliance\DcGeneral\Data\PropertyValueBagInterface', array(), array());
+        $valuesBag =
+            $this->getMock('ContaoCommunityAlliance\DcGeneral\Data\PropertyValueBagInterface', array(), array());
 
         // Attribute will return timestamp, create it.
         $dateTime  = \DateTime::createFromFormat($format, $value);
@@ -231,7 +232,7 @@ class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
         $event->setProperty('date');
         $event->setValue($value);
 
-        $this->backendSubscriber->handleEncodePropertyValueFromWidget($event);
+        $this->bootSubscriber->handleEncodePropertyValueFromWidget($event);
 
         $this->assertEquals($timestamp, $event->getValue());
     }
@@ -276,7 +277,7 @@ class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
                 )
             );
 
-        $this->backendSubscriber->handleDecodePropertyValueForWidgetEvent($event);
+        $this->bootSubscriber->handleDecodePropertyValueForWidgetEvent($event);
 
         $this->assertEquals($value, $event->getValue());
     }
