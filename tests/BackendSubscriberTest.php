@@ -25,16 +25,18 @@ use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\EncodePropertyValueFromWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\EnvironmentInterface;
+use Doctrine\DBAL\Driver\Connection;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\Attribute\Timestamp\BackendSubscriber;
 use MetaModels\Attribute\Timestamp\Timestamp;
 use MetaModels\IMetaModelsServiceContainer;
 use MetaModels\DcGeneral\Data\Model;
+use PHPUnit\Framework\TestCase;
 
 /**
  * This class tests the BackendSubscriber class.
  */
-class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
+class BackendSubscriberTest extends TestCase
 {
     /**
      * The backend subscriber being tested.
@@ -50,6 +52,30 @@ class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
     private $eventDispatcher;
 
     /**
+     * Create a mock.
+     *
+     * @param string     $className            The class which is mocked.
+     * @param array|null $methods              Limit the methods.
+     * @param array|null $constructorArguments Constructor arguments.
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function getMock($className, array $methods = null, array $constructorArguments = null)
+    {
+        $builder = $this->getMockBuilder($className);
+
+        if ($methods !== null) {
+            $builder->setMethods($methods);
+        }
+
+        if ($constructorArguments) {
+            $builder->setConstructorArgs($constructorArguments);
+        }
+
+        return $builder->getMock();
+    }
+
+    /**
      * Setup the test.
      *
      * @return void
@@ -59,7 +85,7 @@ class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->eventDispatcher   = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
         $this->backendSubscriber = new BackendSubscriber($this->mockServiceContainer());
         $this->metaModel         = $this->getMock('MetaModels\IMetaModel');
-        $this->item              = $this->getMock('MetaModels\IItem', array(), array($this->metaModel));
+        $this->item              = $this->getMock('MetaModels\IItem', [], array($this->metaModel));
     }
 
     /**
@@ -105,19 +131,9 @@ class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     private function mockModelWithAttribute($attribute)
     {
-        $model = $this->getMock(
-            'MetaModels\DcGeneral\Data\Model',
-            array(
-            ),
-            array(
-                $this->item
-            )
-        );
-
-        $this->item
-            ->expects($this->any())
-            ->method('getProperty')
-            ->will($this->returnValue($attribute));
+        $model = $this->getMockBuilder('MetaModels\DcGeneral\Data\Model')
+            ->setConstructorArgs([[]])
+            ->getMock();
 
         $model
             ->expects($this->any())
@@ -130,20 +146,22 @@ class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
     /**
      * Mock the timestamp attribute.
      *
-     * @param string $format The format being used.
+     * @param string $format  The format being used.
+     * @param array  $methods Methods which should be mocked.
      *
      * @return Timestamp
      */
-    private function mockAttribute($format)
+    private function mockAttribute($format, array $methods = [])
     {
+        $connection = $this->getMock(Connection::class);
         $attribute = $this->getMock(
             'MetaModels\Attribute\Timestamp\Timestamp',
-            array(),
+            array_merge(['getDateTimeFormatString', 'getAttribute'], $methods),
             array(
-                $this->metaModel
-            ),
-            '',
-            false
+                $this->metaModel,
+                $connection,
+                []
+            )
         );
 
         $attribute
@@ -219,7 +237,7 @@ class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
         $dateTime  = \DateTime::createFromFormat($format, $value);
         $timestamp = $dateTime->getTimestamp();
 
-        $attribute = $this->mockAttribute($format);
+        $attribute = $this->mockAttribute($format, ['valueToWidget']);
         $attribute
             ->expects($this->any())
             ->method('valueToWidget')
@@ -250,7 +268,7 @@ class BackendSubscriberTest extends \PHPUnit_Framework_TestCase
         $dateTime  = \DateTime::createFromFormat($format, $value);
         $timestamp = $dateTime->getTimestamp();
 
-        $attribute = $this->mockAttribute($format);
+        $attribute = $this->mockAttribute($format, ['widgetToValue']);
         $attribute
             ->expects($this->any())
             ->method('widgetToValue')

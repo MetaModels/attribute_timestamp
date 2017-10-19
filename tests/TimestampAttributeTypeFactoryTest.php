@@ -21,15 +21,17 @@
 
 namespace MetaModels\Test\Attribute\Timestamp;
 
+use Doctrine\DBAL\Driver\Connection;
 use MetaModels\Attribute\IAttributeTypeFactory;
 use MetaModels\Attribute\Timestamp\AttributeTypeFactory;
 use MetaModels\IMetaModel;
-use MetaModels\Test\Attribute\AttributeTypeFactoryTest;
+use MetaModels\MetaModel;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test the attribute factory.
  */
-class TimestampAttributeTypeFactoryTest extends AttributeTypeFactoryTest
+class TimestampAttributeTypeFactoryTest extends TestCase
 {
     /**
      * Mock a MetaModel.
@@ -44,11 +46,9 @@ class TimestampAttributeTypeFactoryTest extends AttributeTypeFactoryTest
      */
     protected function mockMetaModel($tableName, $language, $fallbackLanguage)
     {
-        $metaModel = $this->getMock(
-            'MetaModels\MetaModel',
-            array(),
-            array(array())
-        );
+        $metaModel = $this->getMockBuilder(MetaModel::class)
+            ->setConstructorArgs([[]])
+            ->getMock();
 
         $metaModel
             ->expects($this->any())
@@ -75,7 +75,9 @@ class TimestampAttributeTypeFactoryTest extends AttributeTypeFactoryTest
      */
     protected function getAttributeFactories()
     {
-        return array(new AttributeTypeFactory());
+        $connection = $this->getMockBuilder(Connection::class)->getMock();
+
+        return array(new AttributeTypeFactory($connection));
     }
 
     /**
@@ -85,8 +87,9 @@ class TimestampAttributeTypeFactoryTest extends AttributeTypeFactoryTest
      */
     public function testCreateSelect()
     {
-        $factory   = new AttributeTypeFactory();
-        $values    = array(
+        $connection = $this->getMockBuilder(Connection::class)->getMock();
+        $factory    = new AttributeTypeFactory($connection);
+        $values     = array(
         );
         $attribute = $factory->createInstance(
             $values,

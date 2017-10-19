@@ -23,13 +23,16 @@
 namespace MetaModels\Test\Attribute\Timestamp;
 
 use Contao\TextField;
+use Doctrine\DBAL\Driver\Connection;
 use MetaModels\Attribute\Timestamp\Timestamp;
 use MetaModels\IMetaModel;
+use MetaModels\MetaModel;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests to test class Timestamp.
  */
-class TimestampTest extends \PHPUnit_Framework_TestCase
+class TimestampTest extends TestCase
 {
     /**
      * The preserved timezone.
@@ -104,11 +107,9 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
      */
     protected function mockMetaModel($language, $fallbackLanguage)
     {
-        $metaModel = $this->getMock(
-            'MetaModels\MetaModel',
-            array(),
-            array(array())
-        );
+        $metaModel = $this->getMockBuilder(MetaModel::class)
+            ->setConstructorArgs([[]])
+            ->getMock();
 
         $metaModel
             ->expects($this->any())
@@ -139,8 +140,11 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
      */
     protected function getAttribute($data, $metaModel = null)
     {
+        $connection = $this->getMockBuilder(Connection::class)->getMock();
+
         return new Timestamp(
             $metaModel ?: $this->mockMetaModel('en', 'en'),
+            $connection,
             array_replace_recursive(
                 array(
                     'id'           => 1,
@@ -173,7 +177,8 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
      */
     public function testInstantiation()
     {
-        $attribute = new Timestamp($this->mockMetaModel('en', 'en'));
+        $connection = $this->getMockBuilder(Connection::class)->getMock();
+        $attribute  = new Timestamp($this->mockMetaModel('en', 'en'), $connection);
         $this->assertInstanceOf('MetaModels\Attribute\Timestamp\Timestamp', $attribute);
     }
 
@@ -270,7 +275,9 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
                     'rte'            => false,
                     'preserveTags'   => false,
                     'encrypt'        => false,
-                    'nullIfEmpty'    => false
+                    'nullIfEmpty'    => false,
+                    // Widget::getAttributesFromDca() checks it. Prevent undefined index error.
+                    'sql'            => ''
                 ),
                 'activeRecord'   => null,
                 'options_callback'   => null,
@@ -294,8 +301,15 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
             $value
         );
 
-        $widget = $this->getMock('Contao\TextField', array('getPost'), array($prepared));
-        $widget->expects($this->any())->method('getPost')->will($this->returnValue($value));
+        $widget = $this->getMockBuilder(TextField::class)
+            ->setMethods(['getPost'])
+            ->setConstructorArgs([$prepared])
+            ->getMock();
+
+        $widget
+            ->expects($this->any())
+            ->method('getPost')
+            ->will($this->returnValue($value));
 
         /** @var TextField $widget */
         $widget->validate();
