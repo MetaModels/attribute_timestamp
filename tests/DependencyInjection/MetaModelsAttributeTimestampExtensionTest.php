@@ -18,7 +18,7 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Attribute\Timestamp\DependencyInjection;
+namespace MetaModels\Attribute\Timestamp\Test\DependencyInjection;
 
 use MetaModels\Attribute\Timestamp\AttributeTypeFactory;
 use MetaModels\Attribute\Timestamp\DependencyInjection\MetaModelsAttributeTimestampExtension;

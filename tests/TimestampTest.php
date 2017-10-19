@@ -20,7 +20,7 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Attribute\Timestamp;
+namespace MetaModels\Attribute\Timestamp\Test;
 
 use Contao\TextField;
 use Doctrine\DBAL\Driver\Connection;

@@ -19,7 +19,7 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Attribute\Timestamp;
+namespace MetaModels\Attribute\Timestamp\Test;
 
 use Doctrine\DBAL\Driver\Connection;
 use MetaModels\Attribute\IAttributeTypeFactory;

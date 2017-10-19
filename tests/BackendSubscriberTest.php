@@ -19,7 +19,7 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Attribute\Timestamp;
+namespace MetaModels\Attribute\Timestamp\Test;
 
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;

@@ -18,7 +18,7 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Attribute\Timestamp\ContaoManager;
+namespace MetaModels\Attribute\Timestamp\Test\ContaoManager;
 
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
