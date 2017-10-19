@@ -1,0 +1,7 @@
+services:
+    metamodels.attribute_timestamp.factory:
+        class: MetaModels\Attribute\Timestamp\AttributeTypeFactory
+        arguments:
+            - '@database_connection'
+        tags:
+          - { name: metamodels.attribute_factory }

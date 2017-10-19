@@ -21,6 +21,7 @@
 
 namespace MetaModels\Attribute\Timestamp;
 
+use Doctrine\DBAL\Driver\Connection;
 use MetaModels\Attribute\AbstractAttributeTypeFactory;
 
 /**
@@ -29,13 +30,32 @@ use MetaModels\Attribute\AbstractAttributeTypeFactory;
 class AttributeTypeFactory extends AbstractAttributeTypeFactory
 {
     /**
-     * {@inheritDoc}
+     * Database connection.
+     *
+     * @var Connection
      */
-    public function __construct()
+    private $connection;
+
+    /**
+     * Create a new instance.
+     *
+     * @param Connection $connection Database connection;
+     */
+    public function __construct(Connection $connection)
     {
         parent::__construct();
-        $this->typeName  = 'timestamp';
-        $this->typeIcon  = 'bundles/metamodelsattributetimestampbundle/timestamp.png';
-        $this->typeClass = 'MetaModels\Attribute\Timestamp\Timestamp';
+
+        $this->typeName   = 'timestamp';
+        $this->typeIcon   = 'bundles/metamodelsattributetimestampbundle/timestamp.png';
+        $this->typeClass  = 'MetaModels\Attribute\Timestamp\Timestamp';
+        $this->connection = $connection;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createInstance($information, $metaModel)
+    {
+        return new $this->typeClass($metaModel, $this->connection, $information);
     }
 }
