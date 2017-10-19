@@ -31,18 +31,18 @@
     "source": "https://github.com/MetaModels/attribute_timestamp"
   },
   "require": {
-    "php": ">=5.4",
+    "php": ">=5.6",
     "contao/core-bundle": "^4.4",
     "contao-community-alliance/dc-general": "~2.1@dev",
     "metamodels/core": "~2.1@dev",
+    "metamodels/attribute_numeric": "~2.1@dev",
     "symfony/dependency-injection": "^3.3",
-    "symfony/http-kernel": "^3.3",
-    "metamodels/attribute_numeric": "~2.0",
+    "symfony/http-kernel": "^3.3"
   },
   "require-dev": {
     "cyberspectrum/contao-toolbox": "~0.6",
-    "phpcq/all-tasks": "~1.1",
-    "metamodels/base-unit-tests": "~1.0"
+    "phpcq/all-tasks": "~1.2",
+    "contao/manager-bundle": "~4.4"
   },
   "autoload": {
     "psr-4": {
@@ -51,7 +51,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "MetaModels\\Attribute\\Timestamp\\\\Test\\": "tests"
+      "MetaModels\\Attribute\\Timestamp\\Test\\": "tests"
     }
   },
   "extra": {
@@ -59,9 +59,6 @@
       "sources": {
         "contao": "system/modules/metamodelsattribute_timestamp"
       },
-      "runonce": [
-        "runonce/runonce.php"
-      ],
       "transifex": {
         "project": "metamodels",
         "prefix": "attribute_timestamp-",
