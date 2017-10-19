@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2016 The MetaModels team.
+ * (c) 2012-2017 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,7 +14,7 @@
  * @subpackage AttributeTimestamp
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
- * @copyright  2012-2016 The MetaModels team.
+ * @copyright  2012-2017 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -26,31 +26,12 @@ use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\EncodePropertyValueFromWidgetEvent;
 use MetaModels\DcGeneral\Data\Model;
-use MetaModels\DcGeneral\Events\BaseSubscriber;
 
 /**
  * Handles event operations for timestamp attributes.
  */
-class BackendSubscriber extends BaseSubscriber
+class BackendSubscriber
 {
-    /**
-     * Register all listeners to handle creation of a data container.
-     *
-     * @return void
-     */
-    protected function registerEventsInDispatcher()
-    {
-        $this
-            ->addListener(
-                EncodePropertyValueFromWidgetEvent::NAME,
-                array($this, 'handleEncodePropertyValueFromWidget')
-            )
-            ->addListener(
-                DecodePropertyValueForWidgetEvent::NAME,
-                array($this, 'handleDecodePropertyValueForWidgetEvent')
-            );
-    }
-
     /**
      * Encode an timestamp attribute value from a widget value.
      *
