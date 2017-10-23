@@ -25,10 +25,11 @@ use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\EncodePropertyValueFromWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\EnvironmentInterface;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\Attribute\Timestamp\BackendSubscriber;
 use MetaModels\Attribute\Timestamp\Timestamp;
+use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModelsServiceContainer;
 use MetaModels\DcGeneral\Data\Model;
 use PHPUnit\Framework\TestCase;
@@ -50,6 +51,20 @@ class BackendSubscriberTest extends TestCase
     private $item;
 
     private $eventDispatcher;
+
+    /**
+     * System columns.
+     *
+     * @var array
+     */
+    private $systemColumns = [
+        'id',
+        'pid',
+        'sorting',
+        'tstamp',
+        'vargroup',
+        'varbase ',
+    ];
 
     /**
      * Create a mock.
@@ -83,7 +98,7 @@ class BackendSubscriberTest extends TestCase
     public function setUp()
     {
         $this->eventDispatcher   = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
-        $this->backendSubscriber = new BackendSubscriber($this->mockServiceContainer());
+        $this->backendSubscriber = new BackendSubscriber();
         $this->metaModel         = $this->getMock('MetaModels\IMetaModel');
         $this->item              = $this->getMock('MetaModels\IItem', [], array($this->metaModel));
     }
@@ -153,14 +168,22 @@ class BackendSubscriberTest extends TestCase
      */
     private function mockAttribute($format, array $methods = [])
     {
-        $connection = $this->getMock(Connection::class);
+        $connection = $this->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $manipulator = $this->getMockBuilder(TableManipulator::class)
+            ->setConstructorArgs([$connection, $this->systemColumns])
+            ->getMock();
+
         $attribute = $this->getMock(
             'MetaModels\Attribute\Timestamp\Timestamp',
             array_merge(['getDateTimeFormatString', 'getAttribute'], $methods),
             array(
                 $this->metaModel,
+                [],
                 $connection,
-                []
+                $manipulator
             )
         );
 
@@ -185,7 +208,7 @@ class BackendSubscriberTest extends TestCase
      */
     public function it_is_initializable()
     {
-        $subscriber = new BackendSubscriber($this->mockServiceContainer());
+        $subscriber = new BackendSubscriber();
         $this->assertInstanceOf('MetaModels\Attribute\Timestamp\BackendSubscriber', $subscriber);
     }
 

@@ -23,6 +23,7 @@ namespace MetaModels\Attribute\Timestamp;
 
 use Doctrine\DBAL\Driver\Connection;
 use MetaModels\Attribute\AbstractAttributeTypeFactory;
+use MetaModels\Helper\TableManipulator;
 
 /**
  * Attribute type factory for timestamp attributes.
@@ -37,18 +38,28 @@ class AttributeTypeFactory extends AbstractAttributeTypeFactory
     private $connection;
 
     /**
+     * The table manipulator.
+     *
+     * @var TableManipulator
+     */
+    private $tableManipulator;
+
+    /**
      * Create a new instance.
      *
-     * @param Connection $connection Database connection;
+     * @param Connection       $connection       Database connection;
+     * @param TableManipulator $tableManipulator The table manipulator.
      */
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, TableManipulator $tableManipulator)
     {
         parent::__construct();
 
-        $this->typeName   = 'timestamp';
-        $this->typeIcon   = 'bundles/metamodelsattributetimestampbundle/timestamp.png';
-        $this->typeClass  = 'MetaModels\Attribute\Timestamp\Timestamp';
-        $this->connection = $connection;
+        $this->typeName  = 'timestamp';
+        $this->typeIcon  = 'bundles/metamodelsattributetimestampbundle/timestamp.png';
+        $this->typeClass = 'MetaModels\Attribute\Timestamp\Timestamp';
+
+        $this->connection       = $connection;
+        $this->tableManipulator = $tableManipulator;
     }
 
     /**
@@ -56,6 +67,6 @@ class AttributeTypeFactory extends AbstractAttributeTypeFactory
      */
     public function createInstance($information, $metaModel)
     {
-        return new $this->typeClass($metaModel, $this->connection, $information);
+        return new $this->typeClass($metaModel, $information, $this->connection, $this->tableManipulator);
     }
 }

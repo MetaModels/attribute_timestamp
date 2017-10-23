@@ -23,8 +23,9 @@
 namespace MetaModels\Attribute\Timestamp\Test;
 
 use Contao\TextField;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\Timestamp\Timestamp;
+use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 use MetaModels\MetaModel;
 use PHPUnit\Framework\TestCase;
@@ -40,6 +41,20 @@ class TimestampTest extends TestCase
      * @var string
      */
     private $timezone;
+
+    /**
+     * System columns.
+     *
+     * @var array
+     */
+    private $systemColumns = [
+        'id',
+        'pid',
+        'sorting',
+        'tstamp',
+        'vargroup',
+        'varbase ',
+    ];
 
     /**
      * Preserve the timezone.
@@ -103,7 +118,7 @@ class TimestampTest extends TestCase
      * @param string $language         The language.
      * @param string $fallbackLanguage The fallback language.
      *
-     * @return IMetaModel
+     * @return IMetaModel|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function mockMetaModel($language, $fallbackLanguage)
     {
@@ -130,6 +145,18 @@ class TimestampTest extends TestCase
     }
 
     /**
+     * Mock the database connection.
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject|Connection
+     */
+    private function mockConnection()
+    {
+        return $this->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
      * Create the attribute with the given values.
      *
      * @param array           $data      The initialization array.
@@ -140,11 +167,11 @@ class TimestampTest extends TestCase
      */
     protected function getAttribute($data, $metaModel = null)
     {
-        $connection = $this->getMockBuilder(Connection::class)->getMock();
+        $connection  = $this->mockConnection();
+        $manipulator = $this->mockTableManipulator($connection);
 
         return new Timestamp(
             $metaModel ?: $this->mockMetaModel('en', 'en'),
-            $connection,
             array_replace_recursive(
                 array(
                     'id'           => 1,
@@ -166,8 +193,24 @@ class TimestampTest extends TestCase
                     'readonly'     => 1
                 ),
                 $data
-            )
+            ),
+            $connection,
+            $manipulator
         );
+    }
+
+    /**
+     * Mock the table manipulator.
+     *
+     * @param Connection $connection The database connection mock.
+     *
+     * @return TableManipulator|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function mockTableManipulator(Connection $connection)
+    {
+        return $this->getMockBuilder(TableManipulator::class)
+            ->setConstructorArgs([$connection, $this->systemColumns])
+            ->getMock();
     }
 
     /**
@@ -177,8 +220,9 @@ class TimestampTest extends TestCase
      */
     public function testInstantiation()
     {
-        $connection = $this->getMockBuilder(Connection::class)->getMock();
-        $attribute  = new Timestamp($this->mockMetaModel('en', 'en'), $connection);
+        $connection  = $this->mockConnection();
+        $manipulator = $this->mockTableManipulator($connection);
+        $attribute   = new Timestamp($this->mockMetaModel('en', 'en'), [], $connection, $manipulator);
         $this->assertInstanceOf('MetaModels\Attribute\Timestamp\Timestamp', $attribute);
     }
 
