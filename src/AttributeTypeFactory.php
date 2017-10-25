@@ -21,14 +21,14 @@
 
 namespace MetaModels\Attribute\Timestamp;
 
-use Doctrine\DBAL\Driver\Connection;
-use MetaModels\Attribute\AbstractAttributeTypeFactory;
+use Doctrine\DBAL\Connection;
+use MetaModels\Attribute\AbstractSimpleAttributeTypeFactory;
 use MetaModels\Helper\TableManipulator;
 
 /**
  * Attribute type factory for timestamp attributes.
  */
-class AttributeTypeFactory extends AbstractAttributeTypeFactory
+class AttributeTypeFactory extends AbstractSimpleAttributeTypeFactory
 {
     /**
      * Create a new instance.
