@@ -31,20 +31,6 @@ use MetaModels\Helper\TableManipulator;
 class AttributeTypeFactory extends AbstractAttributeTypeFactory
 {
     /**
-     * Database connection.
-     *
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * The table manipulator.
-     *
-     * @var TableManipulator
-     */
-    private $tableManipulator;
-
-    /**
      * Create a new instance.
      *
      * @param Connection       $connection       Database connection;
@@ -52,21 +38,10 @@ class AttributeTypeFactory extends AbstractAttributeTypeFactory
      */
     public function __construct(Connection $connection, TableManipulator $tableManipulator)
     {
-        parent::__construct();
+        parent::__construct($connection, $tableManipulator);
 
         $this->typeName  = 'timestamp';
         $this->typeIcon  = 'bundles/metamodelsattributetimestampbundle/timestamp.png';
-        $this->typeClass = 'MetaModels\Attribute\Timestamp\Timestamp';
-
-        $this->connection       = $connection;
-        $this->tableManipulator = $tableManipulator;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createInstance($information, $metaModel)
-    {
-        return new $this->typeClass($metaModel, $information, $this->connection, $this->tableManipulator);
+        $this->typeClass = Timestamp::class;
     }
 }
