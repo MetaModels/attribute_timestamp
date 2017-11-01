@@ -41,7 +41,7 @@ class AttributeTypeFactory extends AbstractSimpleAttributeTypeFactory
         parent::__construct($connection, $tableManipulator);
 
         $this->typeName  = 'timestamp';
-        $this->typeIcon  = 'bundles/metamodelsattributetimestampbundle/timestamp.png';
+        $this->typeIcon  = 'bundles/metamodelsattributetimestamp/timestamp.png';
         $this->typeClass = Timestamp::class;
     }
 }
