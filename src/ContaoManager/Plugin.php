@@ -18,13 +18,13 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Timestamp\ContaoManager;
+namespace MetaModels\AttributeTimestampBundle\ContaoManager;
 
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use MetaModels\Attribute\Numeric\MetaModelsAttributeNumericBundle;
-use MetaModels\Attribute\Timestamp\MetaModelsAttributeTimestampBundle;
+use MetaModels\AttributeTimestampBundle\MetaModelsAttributeTimestampBundle;
 use MetaModels\CoreBundle\MetaModelsCoreBundle;
 
 /**

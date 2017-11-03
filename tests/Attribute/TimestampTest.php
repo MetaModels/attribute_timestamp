@@ -20,11 +20,11 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Timestamp\Test;
+namespace MetaModels\AttributeTimestampBundle\Test\Attribute;
 
 use Contao\TextField;
 use Doctrine\DBAL\Connection;
-use MetaModels\Attribute\Timestamp\Timestamp;
+use MetaModels\AttributeTimestampBundle\Attribute\Timestamp;
 use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 use MetaModels\MetaModel;
@@ -223,7 +223,7 @@ class TimestampTest extends TestCase
         $connection  = $this->mockConnection();
         $manipulator = $this->mockTableManipulator($connection);
         $attribute   = new Timestamp($this->mockMetaModel('en', 'en'), [], $connection, $manipulator);
-        $this->assertInstanceOf('MetaModels\Attribute\Timestamp\Timestamp', $attribute);
+        $this->assertInstanceOf(Timestamp::class, $attribute);
     }
 
     /**

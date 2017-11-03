@@ -18,13 +18,13 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Timestamp\Test\DependencyInjection;
+namespace MetaModels\AttributeTimestampBundle\Test\DependencyInjection;
 
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\EncodePropertyValueFromWidgetEvent;
-use MetaModels\Attribute\Timestamp\AttributeTypeFactory;
-use MetaModels\Attribute\Timestamp\BackendSubscriber;
-use MetaModels\Attribute\Timestamp\DependencyInjection\MetaModelsAttributeTimestampExtension;
+use MetaModels\AttributeTimestampBundle\Attribute\AttributeTypeFactory;
+use MetaModels\AttributeTimestampBundle\EventListener\BackendEventListener;
+use MetaModels\AttributeTimestampBundle\DependencyInjection\MetaModelsAttributeTimestampExtension;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -107,7 +107,7 @@ class MetaModelsAttributeTimestampExtensionTest extends TestCase
                         function ($value) {
                             /** @var Definition $value */
                             $this->assertInstanceOf(Definition::class, $value);
-                            $this->assertEquals(BackendSubscriber::class, $value->getClass());
+                            $this->assertEquals(BackendEventListener::class, $value->getClass());
                             $this->assertCount(1, $value->getTag('kernel.event_listener'));
                             $this->assertEventListener(
                                 $value,
@@ -125,7 +125,7 @@ class MetaModelsAttributeTimestampExtensionTest extends TestCase
                         function ($value) {
                             /** @var Definition $value */
                             $this->assertInstanceOf(Definition::class, $value);
-                            $this->assertEquals(BackendSubscriber::class, $value->getClass());
+                            $this->assertEquals(BackendEventListener::class, $value->getClass());
                             $this->assertEventListener(
                                 $value,
                                 DecodePropertyValueForWidgetEvent::NAME,

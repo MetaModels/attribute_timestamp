@@ -18,7 +18,7 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Timestamp;
+namespace MetaModels\AttributeTimestampBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

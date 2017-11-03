@@ -19,7 +19,7 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Timestamp\Test;
+namespace MetaModels\AttributeTimestampBundle\Test\EventListener;
 
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
@@ -27,8 +27,8 @@ use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\Encod
 use ContaoCommunityAlliance\DcGeneral\EnvironmentInterface;
 use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\IAttribute;
-use MetaModels\Attribute\Timestamp\BackendSubscriber;
-use MetaModels\Attribute\Timestamp\Timestamp;
+use MetaModels\AttributeTimestampBundle\EventListener\BackendEventListener;
+use MetaModels\AttributeTimestampBundle\Attribute\Timestamp;
 use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModelsServiceContainer;
 use MetaModels\DcGeneral\Data\Model;
@@ -37,12 +37,12 @@ use PHPUnit\Framework\TestCase;
 /**
  * This class tests the BackendSubscriber class.
  */
-class BackendSubscriberTest extends TestCase
+class BackendEventListenerTest extends TestCase
 {
     /**
      * The backend subscriber being tested.
      *
-     * @var BackendSubscriber
+     * @var BackendEventListener
      */
     private $backendSubscriber;
 
@@ -98,7 +98,7 @@ class BackendSubscriberTest extends TestCase
     public function setUp()
     {
         $this->eventDispatcher   = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
-        $this->backendSubscriber = new BackendSubscriber();
+        $this->backendSubscriber = new BackendEventListener();
         $this->metaModel         = $this->getMock('MetaModels\IMetaModel');
         $this->item              = $this->getMock('MetaModels\IItem', [], array($this->metaModel));
     }
@@ -208,8 +208,8 @@ class BackendSubscriberTest extends TestCase
      */
     public function it_is_initializable()
     {
-        $subscriber = new BackendSubscriber();
-        $this->assertInstanceOf('MetaModels\Attribute\Timestamp\BackendSubscriber', $subscriber);
+        $subscriber = new BackendEventListener();
+        $this->assertInstanceOf(BackendEventListener::class, $subscriber);
     }
 
     /**

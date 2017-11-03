@@ -19,18 +19,19 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Timestamp;
+namespace MetaModels\AttributeTimestampBundle\EventListener;
 
 use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\EncodePropertyValueFromWidgetEvent;
+use MetaModels\AttributeTimestampBundle\Attribute\Timestamp;
 use MetaModels\DcGeneral\Data\Model;
 
 /**
  * Handles event operations for timestamp attributes.
  */
-class BackendSubscriber
+class BackendEventListener
 {
     /**
      * Encode an timestamp attribute value from a widget value.

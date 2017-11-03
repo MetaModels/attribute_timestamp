@@ -46,19 +46,22 @@
   },
   "autoload": {
     "psr-4": {
-      "MetaModels\\Attribute\\Timestamp\\": "src"
-    }
+      "MetaModels\\AttributeTimestampBundle\\": "src"
+    },
+    "files": [
+      "src/deprecated-autoload.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
-      "MetaModels\\Attribute\\Timestamp\\Test\\": "tests"
+      "MetaModels\\AttributeTimestampBundle\\Test\\": "tests"
     },
     "files": [
       "vendor/phpcq/autoload-validation/hacks/contao-hack.php"
     ]
   },
   "extra": {
-    "contao-manager-plugin": "MetaModels\\Attribute\\Timestamp\\ContaoManager\\Plugin",
+    "contao-manager-plugin": "MetaModels\\AttributeTimestampBundle\\ContaoManager\\Plugin",
     "contao": {
       "transifex": {
         "project": "metamodels",

@@ -24,18 +24,18 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Timestamp;
+namespace MetaModels\AttributeTimestampBundle\Attribute;
 
 use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
-use MetaModels\Attribute\Numeric\AttributeNumeric;
+use MetaModels\AttributeNumericBundle\Attribute\Numeric;
 use MetaModels\Render\Setting\ISimple;
 use MetaModels\Render\Template;
 
 /**
  * This is the MetaModelAttribute class for handling text fields.
  */
-class Timestamp extends AttributeNumeric
+class Timestamp extends Numeric
 {
     /**
      * {@inheritDoc}

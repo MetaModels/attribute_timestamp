@@ -19,7 +19,7 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Timestamp;
+namespace MetaModels\AttributeTimestampBundle\Attribute;
 
 use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\AbstractSimpleAttributeTypeFactory;
@@ -33,7 +33,7 @@ class AttributeTypeFactory extends AbstractSimpleAttributeTypeFactory
     /**
      * Create a new instance.
      *
-     * @param Connection       $connection       Database connection;
+     * @param Connection       $connection       Database connection.
      * @param TableManipulator $tableManipulator The table manipulator.
      */
     public function __construct(Connection $connection, TableManipulator $tableManipulator)

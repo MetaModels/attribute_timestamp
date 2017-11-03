@@ -19,11 +19,12 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Timestamp\Test;
+namespace MetaModels\AttributeTimestampBundle\Test\Attribute;
 
 use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\IAttributeTypeFactory;
-use MetaModels\Attribute\Timestamp\AttributeTypeFactory;
+use MetaModels\AttributeTimestampBundle\Attribute\AttributeTypeFactory;
+use MetaModels\AttributeTimestampBundle\Attribute\Timestamp;
 use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 use MetaModels\MetaModel;
@@ -138,7 +139,7 @@ class TimestampAttributeTypeFactoryTest extends TestCase
             $this->mockMetaModel('mm_test', 'de', 'en')
         );
 
-        $this->assertInstanceOf('MetaModels\Attribute\Timestamp\Timestamp', $attribute);
+        $this->assertInstanceOf(Timestamp::class, $attribute);
 
         foreach ($values as $key => $value) {
             $this->assertEquals($value, $attribute->get($key), $key);
