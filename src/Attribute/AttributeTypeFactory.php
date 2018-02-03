@@ -24,6 +24,7 @@ namespace MetaModels\AttributeTimestampBundle\Attribute;
 use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\AbstractSimpleAttributeTypeFactory;
 use MetaModels\Helper\TableManipulator;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Attribute type factory for timestamp attributes.
@@ -31,17 +32,37 @@ use MetaModels\Helper\TableManipulator;
 class AttributeTypeFactory extends AbstractSimpleAttributeTypeFactory
 {
     /**
+     * The event dispatcher.
+     *
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
      * Create a new instance.
      *
-     * @param Connection       $connection       Database connection.
-     * @param TableManipulator $tableManipulator The table manipulator.
+     * @param Connection               $connection       Database connection.
+     * @param TableManipulator         $tableManipulator The table manipulator.
+     * @param EventDispatcherInterface $dispatcher       The event dispatcher.
      */
-    public function __construct(Connection $connection, TableManipulator $tableManipulator)
-    {
+    public function __construct(
+        Connection $connection,
+        TableManipulator $tableManipulator,
+        EventDispatcherInterface $dispatcher
+    ) {
         parent::__construct($connection, $tableManipulator);
 
-        $this->typeName  = 'timestamp';
-        $this->typeIcon  = 'bundles/metamodelsattributetimestamp/timestamp.png';
-        $this->typeClass = Timestamp::class;
+        $this->typeName   = 'timestamp';
+        $this->typeIcon   = 'bundles/metamodelsattributetimestamp/timestamp.png';
+        $this->typeClass  = Timestamp::class;
+        $this->dispatcher = $dispatcher;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createInstance($information, $metaModel)
+    {
+        return new Timestamp($metaModel, $information, $this->connection, $this->tableManipulator, $this->dispatcher);
     }
 }

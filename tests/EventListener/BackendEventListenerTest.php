@@ -33,6 +33,7 @@ use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModelsServiceContainer;
 use MetaModels\DcGeneral\Data\Model;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This class tests the BackendSubscriber class.
@@ -176,6 +177,8 @@ class BackendEventListenerTest extends TestCase
             ->setConstructorArgs([$connection, $this->systemColumns])
             ->getMock();
 
+        $dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMockForAbstractClass();
+
         $attribute = $this->getMock(
             'MetaModels\Attribute\Timestamp\Timestamp',
             array_merge(['getDateTimeFormatString', 'getAttribute'], $methods),
@@ -183,7 +186,8 @@ class BackendEventListenerTest extends TestCase
                 $this->metaModel,
                 [],
                 $connection,
-                $manipulator
+                $manipulator,
+                $dispatcher
             )
         );
 

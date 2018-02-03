@@ -29,6 +29,7 @@ use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 use MetaModels\MetaModel;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Unit tests to test class Timestamp.
@@ -169,6 +170,7 @@ class TimestampTest extends TestCase
     {
         $connection  = $this->mockConnection();
         $manipulator = $this->mockTableManipulator($connection);
+        $dispatcher  = $this->getMockBuilder(EventDispatcherInterface::class)->getMockForAbstractClass();
 
         return new Timestamp(
             $metaModel ?: $this->mockMetaModel('en', 'en'),
@@ -195,7 +197,8 @@ class TimestampTest extends TestCase
                 $data
             ),
             $connection,
-            $manipulator
+            $manipulator,
+            $dispatcher
         );
     }
 
@@ -222,7 +225,8 @@ class TimestampTest extends TestCase
     {
         $connection  = $this->mockConnection();
         $manipulator = $this->mockTableManipulator($connection);
-        $attribute   = new Timestamp($this->mockMetaModel('en', 'en'), [], $connection, $manipulator);
+        $dispatcher  = $this->getMockBuilder(EventDispatcherInterface::class)->getMockForAbstractClass();
+        $attribute   = new Timestamp($this->mockMetaModel('en', 'en'), [], $connection, $manipulator, $dispatcher);
         $this->assertInstanceOf(Timestamp::class, $attribute);
     }
 

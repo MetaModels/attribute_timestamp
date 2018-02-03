@@ -29,6 +29,7 @@ use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 use MetaModels\MetaModel;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Test the attribute factory.
@@ -111,6 +112,17 @@ class TimestampAttributeTypeFactoryTest extends TestCase
     }
 
     /**
+     * Mock the event dispatcher.
+     *
+     * @return EventDispatcherInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function mockEventDispatcher()
+    {
+        return $this->getMockBuilder(EventDispatcherInterface::class)
+            ->getMockForAbstractClass();
+    }
+
+    /**
      * Override the method to run the tests on the attribute factories to be tested.
      *
      * @return IAttributeTypeFactory[]
@@ -119,8 +131,9 @@ class TimestampAttributeTypeFactoryTest extends TestCase
     {
         $connection  = $this->mockConnection();
         $manipulator = $this->mockTableManipulator($connection);
+        $dispatcher  = $this->mockEventDispatcher();
 
-        return array(new AttributeTypeFactory($connection, $manipulator));
+        return array(new AttributeTypeFactory($connection, $manipulator, $dispatcher));
     }
 
     /**
@@ -132,7 +145,8 @@ class TimestampAttributeTypeFactoryTest extends TestCase
     {
         $connection  = $this->mockConnection();
         $manipulator = $this->mockTableManipulator($connection);
-        $factory     = new AttributeTypeFactory($connection, $manipulator);
+        $dispatcher  = $this->mockEventDispatcher();
+        $factory     = new AttributeTypeFactory($connection, $manipulator, $dispatcher);
         $values      = [];
         $attribute   = $factory->createInstance(
             $values,
