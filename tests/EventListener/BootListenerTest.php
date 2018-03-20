@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2016 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,38 +14,35 @@
  * @subpackage Tests
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-namespace MetaModels\AttributeTimestampBundle\Test\EventListener;
+namespace MetaModels\AttributeTimestampBundle\Test\EventListener\Timestamp;
 
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\EncodePropertyValueFromWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\EnvironmentInterface;
-use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\IAttribute;
-use MetaModels\AttributeTimestampBundle\EventListener\BackendEventListener;
 use MetaModels\AttributeTimestampBundle\Attribute\Timestamp;
-use MetaModels\Helper\TableManipulator;
-use MetaModels\IMetaModelsServiceContainer;
+use MetaModels\AttributeTimestampBundle\EventListener\BootListener;
 use MetaModels\DcGeneral\Data\Model;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This class tests the BackendSubscriber class.
  */
-class BackendEventListenerTest extends TestCase
+class BootListenerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * The backend subscriber being tested.
      *
-     * @var BackendEventListener
+     * @var BootListener
      */
-    private $backendSubscriber;
+    private $bootSubscriber;
 
     private $metaModel;
 
@@ -54,71 +51,16 @@ class BackendEventListenerTest extends TestCase
     private $eventDispatcher;
 
     /**
-     * System columns.
-     *
-     * @var array
-     */
-    private $systemColumns = [
-        'id',
-        'pid',
-        'sorting',
-        'tstamp',
-        'vargroup',
-        'varbase ',
-    ];
-
-    /**
-     * Create a mock.
-     *
-     * @param string     $className            The class which is mocked.
-     * @param array|null $methods              Limit the methods.
-     * @param array|null $constructorArguments Constructor arguments.
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected function getMock($className, array $methods = null, array $constructorArguments = null)
-    {
-        $builder = $this->getMockBuilder($className);
-
-        if ($methods !== null) {
-            $builder->setMethods($methods);
-        }
-
-        if ($constructorArguments) {
-            $builder->setConstructorArgs($constructorArguments);
-        }
-
-        return $builder->getMock();
-    }
-
-    /**
      * Setup the test.
      *
      * @return void
      */
     public function setUp()
     {
-        $this->eventDispatcher   = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
-        $this->backendSubscriber = new BackendEventListener();
-        $this->metaModel         = $this->getMock('MetaModels\IMetaModel');
-        $this->item              = $this->getMock('MetaModels\IItem', [], array($this->metaModel));
-    }
-
-    /**
-     * Mock the service container.
-     *
-     * @return IMetaModelsServiceContainer
-     */
-    private function mockServiceContainer()
-    {
-        $serviceContainer = $this->getMock('MetaModels\IMetaModelsServiceContainer', array(), array());
-
-        $serviceContainer
-            ->expects($this->any())
-            ->method('getEventDispatcher')
-            ->will($this->returnValue($this->eventDispatcher));
-
-        return $serviceContainer;
+        $this->eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $this->bootSubscriber  = new BootListener();
+        $this->metaModel       = $this->getMock('MetaModels\IMetaModel');
+        $this->item            = $this->getMock('MetaModels\IItem', array(), array($this->metaModel));
     }
 
     /**
@@ -147,9 +89,18 @@ class BackendEventListenerTest extends TestCase
      */
     private function mockModelWithAttribute($attribute)
     {
-        $model = $this->getMockBuilder('MetaModels\DcGeneral\Data\Model')
-            ->setConstructorArgs([[]])
-            ->getMock();
+        $model = $this->getMock(
+            'MetaModels\DcGeneral\Data\Model',
+            array(),
+            array(
+                $this->item
+            )
+        );
+
+        $this->item
+            ->expects($this->any())
+            ->method('getProperty')
+            ->will($this->returnValue($attribute));
 
         $model
             ->expects($this->any())
@@ -162,33 +113,20 @@ class BackendEventListenerTest extends TestCase
     /**
      * Mock the timestamp attribute.
      *
-     * @param string $format  The format being used.
-     * @param array  $methods Methods which should be mocked.
+     * @param string $format The format being used.
      *
      * @return Timestamp
      */
-    private function mockAttribute($format, array $methods = [])
+    private function mockAttribute($format)
     {
-        $connection = $this->getMockBuilder(Connection::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $manipulator = $this->getMockBuilder(TableManipulator::class)
-            ->setConstructorArgs([$connection, $this->systemColumns])
-            ->getMock();
-
-        $dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMockForAbstractClass();
-
         $attribute = $this->getMock(
             'MetaModels\Attribute\Timestamp\Timestamp',
-            array_merge(['getDateTimeFormatString', 'getAttribute'], $methods),
+            array(),
             array(
-                $this->metaModel,
-                [],
-                $connection,
-                $manipulator,
-                $dispatcher
-            )
+                $this->metaModel
+            ),
+            '',
+            false
         );
 
         $attribute
@@ -212,8 +150,8 @@ class BackendEventListenerTest extends TestCase
      */
     public function it_is_initializable()
     {
-        $subscriber = new BackendEventListener();
-        $this->assertInstanceOf(BackendEventListener::class, $subscriber);
+        $subscriber = new BootListener();
+        $this->assertInstanceOf('MetaModels\Attribute\Timestamp\BootSubscriber', $subscriber);
     }
 
     /**
@@ -225,24 +163,24 @@ class BackendEventListenerTest extends TestCase
     {
         return array(
             array(
-                'format'   => 'd-m-Y',
-                'value'    => '01-01-2000',
+                'format' => 'd-m-Y',
+                'value'  => '01-01-2000',
             ),
             array(
-                'format'   => 'd-m-Y',
-                'value'    => '15-11-1980',
+                'format' => 'd-m-Y',
+                'value'  => '15-11-1980',
             ),
             array(
-                'format'   => 'd-m-Y H:i:s',
-                'value'    => '15-11-1980 11:22:33',
+                'format' => 'd-m-Y H:i:s',
+                'value'  => '15-11-1980 11:22:33',
             ),
             array(
-                'format'   => 'H:i:s',
-                'value'    => '11:22:33',
+                'format' => 'H:i:s',
+                'value'  => '11:22:33',
             ),
             array(
-                'format'   => 'H:i',
-                'value'    => '20:00',
+                'format' => 'H:i',
+                'value'  => '20:00',
             ),
         );
     }
@@ -258,13 +196,14 @@ class BackendEventListenerTest extends TestCase
      */
     public function it_parses_timestamp_for_widget($format, $value)
     {
-        $valuesBag = $this->getMock('ContaoCommunityAlliance\DcGeneral\Data\PropertyValueBagInterface', array(), array());
+        $valuesBag =
+            $this->getMock('ContaoCommunityAlliance\DcGeneral\Data\PropertyValueBagInterface', array(), array());
 
         // Attribute will return timestamp, create it.
         $dateTime  = \DateTime::createFromFormat($format, $value);
         $timestamp = $dateTime->getTimestamp();
 
-        $attribute = $this->mockAttribute($format, ['valueToWidget']);
+        $attribute = $this->mockAttribute($format);
         $attribute
             ->expects($this->any())
             ->method('valueToWidget')
@@ -276,7 +215,7 @@ class BackendEventListenerTest extends TestCase
         $event->setProperty('date');
         $event->setValue($value);
 
-        $this->backendSubscriber->handleEncodePropertyValueFromWidget($event);
+        $this->bootSubscriber->handleEncodePropertyValueFromWidget($event);
 
         $this->assertEquals($timestamp, $event->getValue());
     }
@@ -295,7 +234,7 @@ class BackendEventListenerTest extends TestCase
         $dateTime  = \DateTime::createFromFormat($format, $value);
         $timestamp = $dateTime->getTimestamp();
 
-        $attribute = $this->mockAttribute($format, ['widgetToValue']);
+        $attribute = $this->mockAttribute($format);
         $attribute
             ->expects($this->any())
             ->method('widgetToValue')
@@ -321,7 +260,7 @@ class BackendEventListenerTest extends TestCase
                 )
             );
 
-        $this->backendSubscriber->handleDecodePropertyValueForWidgetEvent($event);
+        $this->bootSubscriber->handleDecodePropertyValueForWidgetEvent($event);
 
         $this->assertEquals($value, $event->getValue());
     }

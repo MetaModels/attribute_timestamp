@@ -9,7 +9,7 @@ services:
           - { name: metamodels.attribute_factory }
 
     metamodels.attribute_timestamp.backend.encode_property_value_from_widget_listener:
-        class: MetaModels\AttributeTimestampBundle\EventListener\BackendEventListener
+        class: MetaModels\AttributeTimestampBundle\EventListener\BootListener
         tags:
             - {
                 name: kernel.event_listener,
@@ -18,7 +18,7 @@ services:
               }
 
     metamodels.attribute_timestamp.backend.decode_property_value_for_widget_listener:
-        class: MetaModels\AttributeTimestampBundle\EventListener\BackendEventListener
+        class: MetaModels\AttributeTimestampBundle\EventListener\BootListener
         tags:
             - {
                 name: kernel.event_listener,
