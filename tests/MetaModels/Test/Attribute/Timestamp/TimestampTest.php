@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2016 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,7 +15,8 @@
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Greminger <david.greminger@1up.io>
  * @author     David Molineus <david.molineus@netzmacht.de>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -56,13 +57,13 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
             $this
                 ->getMockBuilder('Contao\\System')
                 ->setMockClassName('System')
-                ->setMethods(array('import'))
+                ->setMethods(['import'])
                 ->disableOriginalConstructor()
                 ->getMock();
             $this
                 ->getMockBuilder('Contao\\Config')
                 ->setMockClassName('Config')
-                ->setMethods(array('initialize', 'preload', 'markModified', 'save'))
+                ->setMethods(['initialize', 'preload', 'markModified', 'save'])
                 ->disableOriginalConstructor()
                 ->getMock();
 
@@ -106,8 +107,8 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
     {
         $metaModel = $this->getMock(
             'MetaModels\MetaModel',
-            array(),
-            array(array())
+            [],
+            [[]]
         );
 
         $metaModel
@@ -142,25 +143,25 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
         return new Timestamp(
             $metaModel ?: $this->mockMetaModel('en', 'en'),
             array_replace_recursive(
-                array(
-                    'id'           => 1,
-                    'pid'          => 1,
-                    'tstamp'       => 0,
-                    'name'         => array(
-                        'en'       => 'name English',
-                        'de'       => 'name German',
-                    ),
-                    'description'  => array(
-                        'en'       => 'description English',
-                        'de'       => 'description German',
-                    ),
-                    'type'         => 'base',
-                    'colname'      => 'timestamp',
-                    'isvariant'    => 1,
+                [
+                    'id'          => 1,
+                    'pid'         => 1,
+                    'tstamp'      => 0,
+                    'name'        => [
+                        'en' => 'name English',
+                        'de' => 'name German',
+                    ],
+                    'description' => [
+                        'en' => 'description English',
+                        'de' => 'description German',
+                    ],
+                    'type'        => 'base',
+                    'colname'     => 'timestamp',
+                    'isvariant'   => 1,
                     // Settings originating from tl_metamodel_dcasetting.
-                    'tl_class'     => 'custom_class',
-                    'readonly'     => 1
-                ),
+                    'tl_class'    => 'custom_class',
+                    'readonly'    => 1
+                ],
                 $data
             )
         );
@@ -184,33 +185,33 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
      */
     public function dataProvider()
     {
-        return array(
-            array(
-                'type'     => 'date',
-                'format'   => 'd-m-Y',
-                'value'    => '01-01-2000',
-            ),
-            array(
-                'type'     => 'date',
-                'format'   => 'd-m-Y',
-                'value'    => '15-11-1980',
-            ),
-            array(
-                'type'     => 'datim',
-                'format'   => 'd-m-Y H:i:s',
-                'value'    => '15-11-1980 11:22:33',
-            ),
-            array(
-                'type'     => 'time',
-                'format'   => 'H:i:s',
-                'value'    => '11:22:33',
-            ),
-            array(
-                'type'     => 'time',
-                'format'   => 'H:i',
-                'value'    => '20:00',
-            ),
-        );
+        return [
+            [
+                'type'   => 'date',
+                'format' => 'd-m-Y',
+                'value'  => '01-01-2000',
+            ],
+            [
+                'type'   => 'date',
+                'format' => 'd-m-Y',
+                'value'  => '15-11-1980',
+            ],
+            [
+                'type'   => 'datim',
+                'format' => 'd-m-Y H:i:s',
+                'value'  => '15-11-1980 11:22:33',
+            ],
+            [
+                'type'   => 'time',
+                'format' => 'H:i:s',
+                'value'  => '11:22:33',
+            ],
+            [
+                'type'   => 'time',
+                'format' => 'H:i',
+                'value'  => '20:00',
+            ],
+        ];
     }
 
     /**
@@ -253,29 +254,29 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
         if ($type === 'time') {
             try {
                 $this->setConfigValue('timeFormat', $format);
-                @TextField::getAttributesFromDca(array('eval' => array('rgxp' => 'time')), 'test', '11:22:33');
+                @TextField::getAttributesFromDca(['eval' => ['rgxp' => 'time']], 'test', '11:22:33');
             } catch (\OutOfBoundsException $exception) {
                 $this->markTestSkipped('Widget bug detected? See https://github.com/contao/core/pull/7721');
                 return;
             }
         }
 
-        $attribute       = $this->getAttribute(array('timetype' => $type));
+        $attribute       = $this->getAttribute(['timetype' => $type]);
         $fieldDefinition = array_replace_recursive(
             $attribute->getFieldDefinition(),
-            array(
-                'eval' => array(
+            [
+                'eval'             => [
                     'submitOnChange' => false,
                     'allowHtml'      => false,
                     'rte'            => false,
                     'preserveTags'   => false,
                     'encrypt'        => false,
                     'nullIfEmpty'    => false
-                ),
-                'activeRecord'   => null,
-                'options_callback'   => null,
-                'options'            => null,
-            )
+                ],
+                'activeRecord'     => null,
+                'options_callback' => null,
+                'options'          => null,
+            ]
         );
         $this->setConfigValue('dateFormat', 'd-m-Y');
         $this->setConfigValue('timeFormat', 'h:i');
@@ -294,7 +295,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
             $value
         );
 
-        $widget = $this->getMock('Contao\TextField', array('getPost'), array($prepared));
+        $widget = $this->getMock('Contao\TextField', ['getPost'], [$prepared]);
         $widget->expects($this->any())->method('getPost')->will($this->returnValue($value));
 
         /** @var TextField $widget */
@@ -318,7 +319,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
      */
     public function testEnableDatepickerWhenNotReadOnly()
     {
-        $attribute  = $this->getAttribute(array('timetype' => 'date', 'readonly' => 0));
+        $attribute  = $this->getAttribute(['timetype' => 'date', 'readonly' => 0]);
         $definition = $attribute->getFieldDefinition();
 
         $this->assertArrayHasKey('datepicker', $definition['eval']);
@@ -334,7 +335,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
      */
     public function testDisableDatepickerWhenReadOnly()
     {
-        $attribute  = $this->getAttribute(array('timetype' => 'date', 'readonly' => 1));
+        $attribute  = $this->getAttribute(['timetype' => 'date', 'readonly' => 1]);
         $definition = $attribute->getFieldDefinition();
 
         $this->assertArrayNotHasKey('datepicker', $definition['eval']);

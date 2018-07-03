@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2017 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,7 +20,8 @@
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Henry Lamorski <henry.lamorski@mailbox.org>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2017 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -49,12 +50,12 @@ class Timestamp extends AttributeNumeric
     /**
      * {@inheritDoc}
      */
-    public function getFieldDefinition($arrOverrides = array())
+    public function getFieldDefinition($arrOverrides = [])
     {
         $strDateType                 = $this->getDateTimeType();
         $arrFieldDef                 = parent::getFieldDefinition($arrOverrides);
         $arrFieldDef['eval']['rgxp'] = $strDateType;
-        
+
         if (empty($arrFieldDef['eval']['readonly'])) {
             $arrFieldDef['eval']['datepicker'] = true;
             $arrFieldDef['eval']['tl_class']  .= ' wizard';
@@ -68,9 +69,12 @@ class Timestamp extends AttributeNumeric
      */
     public function getAttributeSettingNames()
     {
-        return array_merge(parent::getAttributeSettingNames(), array(
-            'timetype',
-        ));
+        return array_merge(
+            parent::getAttributeSettingNames(),
+            [
+                'timetype',
+            ]
+        );
     }
 
     /**

@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2016 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,7 +15,8 @@
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -60,7 +61,7 @@ class BootSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
         $this->bootSubscriber  = new BootSubscriber($this->mockServiceContainer());
         $this->metaModel       = $this->getMock('MetaModels\IMetaModel');
-        $this->item            = $this->getMock('MetaModels\IItem', array(), array($this->metaModel));
+        $this->item            = $this->getMock('MetaModels\IItem', [], [$this->metaModel]);
     }
 
     /**
@@ -70,7 +71,7 @@ class BootSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     private function mockServiceContainer()
     {
-        $serviceContainer = $this->getMock('MetaModels\IMetaModelsServiceContainer', array(), array());
+        $serviceContainer = $this->getMock('MetaModels\IMetaModelsServiceContainer', [], []);
 
         $serviceContainer
             ->expects($this->any())
@@ -87,7 +88,7 @@ class BootSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     private function mockEnvironment()
     {
-        $environment = $this->getMock('ContaoCommunityAlliance\DcGeneral\EnvironmentInterface', array(), array());
+        $environment = $this->getMock('ContaoCommunityAlliance\DcGeneral\EnvironmentInterface', [], []);
 
         $environment
             ->expects($this->any())
@@ -108,10 +109,10 @@ class BootSubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $model = $this->getMock(
             'MetaModels\DcGeneral\Data\Model',
-            array(),
-            array(
+            [],
+            [
                 $this->item
-            )
+            ]
         );
 
         $this->item
@@ -138,10 +139,10 @@ class BootSubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $attribute = $this->getMock(
             'MetaModels\Attribute\Timestamp\Timestamp',
-            array(),
-            array(
+            [],
+            [
                 $this->metaModel
-            ),
+            ],
             '',
             false
         );
@@ -178,28 +179,28 @@ class BootSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     public function dataProvider()
     {
-        return array(
-            array(
+        return [
+            [
                 'format' => 'd-m-Y',
                 'value'  => '01-01-2000',
-            ),
-            array(
+            ],
+            [
                 'format' => 'd-m-Y',
                 'value'  => '15-11-1980',
-            ),
-            array(
+            ],
+            [
                 'format' => 'd-m-Y H:i:s',
                 'value'  => '15-11-1980 11:22:33',
-            ),
-            array(
+            ],
+            [
                 'format' => 'H:i:s',
                 'value'  => '11:22:33',
-            ),
-            array(
+            ],
+            [
                 'format' => 'H:i',
                 'value'  => '20:00',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -214,7 +215,7 @@ class BootSubscriberTest extends \PHPUnit_Framework_TestCase
     public function it_parses_timestamp_for_widget($format, $value)
     {
         $valuesBag =
-            $this->getMock('ContaoCommunityAlliance\DcGeneral\Data\PropertyValueBagInterface', array(), array());
+            $this->getMock('ContaoCommunityAlliance\DcGeneral\Data\PropertyValueBagInterface', [], []);
 
         // Attribute will return timestamp, create it.
         $dateTime  = \DateTime::createFromFormat($format, $value);
