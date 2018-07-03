@@ -91,7 +91,7 @@ class BootSubscriber extends BaseSubscriber
         $dispatcher = $event->getEnvironment()->getEventDispatcher();
         $value      = $event->getValue();
 
-        if (is_numeric($value)) {
+        if (\is_numeric($value)) {
             $dateEvent = new ParseDateEvent($value, $attribute->getDateTimeFormatString());
             $dispatcher->dispatch(ContaoEvents::DATE_PARSE, $dateEvent);
 

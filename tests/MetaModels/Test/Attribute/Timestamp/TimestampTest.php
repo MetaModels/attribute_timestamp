@@ -57,11 +57,11 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->timezone = date_default_timezone_get();
-        date_default_timezone_set('GMT');
+        $this->timezone = \date_default_timezone_get();
+        \date_default_timezone_set('GMT');
 
-        if (!defined('TL_MODE')) {
-            define('TL_MODE', 'BE');
+        if (!\defined('TL_MODE')) {
+            \define('TL_MODE', 'BE');
             $this
                 ->getMockBuilder(System::class)
                 ->setMockClassName('System')
@@ -75,16 +75,16 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
                 ->disableOriginalConstructor()
                 ->getMock();
 
-            class_alias(Controller::class, 'Controller');
+            \class_alias(Controller::class, 'Controller');
             try {
-                class_alias(BaseTemplate::class, 'BaseTemplate');
+                \class_alias(BaseTemplate::class, 'BaseTemplate');
             } catch (\Exception $exception) {
                 // BaseTemplate came available with Contao 3.3.
             }
 
-            class_alias(Widget::class, 'Widget');
-            class_alias(Date::class, 'Date');
-            class_alias(Validator::class, 'Validator');
+            \class_alias(Widget::class, 'Widget');
+            \class_alias(Date::class, 'Date');
+            \class_alias(Validator::class, 'Validator');
             // Some error strings for the validator.
             $GLOBALS['TL_LANG']['ERR']['date']        = '%s';
             $GLOBALS['TL_LANG']['ERR']['invalidDate'] = '%s';
@@ -100,7 +100,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        date_default_timezone_set($this->timezone);
+        \date_default_timezone_set($this->timezone);
     }
 
     /**
@@ -150,7 +150,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
     {
         return new Timestamp(
             $metaModel ?: $this->mockMetaModel('en', 'en'),
-            array_replace_recursive(
+            \array_replace_recursive(
                 [
                     'id'          => 1,
                     'pid'         => 1,
@@ -236,7 +236,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
      */
     private function setConfigValue($key, $value)
     {
-        if (!in_array('set', get_class_methods('Config'))) {
+        if (!\in_array('set', \get_class_methods('Config'))) {
             $GLOBALS['TL_CONFIG'][$key] = $value;
         } else {
             Config::set($key, $value);
@@ -270,7 +270,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
         }
 
         $attribute       = $this->getAttribute(['timetype' => $type]);
-        $fieldDefinition = array_replace_recursive(
+        $fieldDefinition = \array_replace_recursive(
             $attribute->getFieldDefinition(),
             [
                 'eval'             => [
@@ -293,7 +293,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
         $this->setConfigValue($type . 'Format', $format);
         $this->setConfigValue('timeZone', 'GMT');
 
-        $dateTime  = new \DateTime($value, new \DateTimeZone(date_default_timezone_get()));
+        $dateTime  = new \DateTime($value, new \DateTimeZone(\date_default_timezone_get()));
         $timeStamp = $dateTime->getTimestamp();
         $converted = $attribute->valueToWidget($timeStamp);
 
@@ -314,9 +314,9 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
 
         $converted = $attribute->widgetToValue($text, 1);
         $this->assertEquals(
-            date($format, $timeStamp),
-            date($format, $converted),
-            date('d-m-Y h:i', $timeStamp) . ' <> ' . date('d-m-Y h:i', $converted)
+            \date($format, $timeStamp),
+            \date($format, $converted),
+            \date('d-m-Y h:i', $timeStamp) . ' <> ' . \date('d-m-Y h:i', $converted)
         );
     }
 

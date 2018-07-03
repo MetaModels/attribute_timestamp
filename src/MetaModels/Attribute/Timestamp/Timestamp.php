@@ -70,7 +70,7 @@ class Timestamp extends AttributeNumeric
      */
     public function getAttributeSettingNames()
     {
-        return array_merge(
+        return \array_merge(
             parent::getAttributeSettingNames(),
             [
                 'timetype',
@@ -141,7 +141,7 @@ class Timestamp extends AttributeNumeric
         }
 
         // If numeric we have already a integer value.
-        if (is_numeric($varValue)) {
+        if (\is_numeric($varValue)) {
             return intval($varValue);
         }
 
@@ -159,7 +159,7 @@ class Timestamp extends AttributeNumeric
     {
         $dispatcher = $this->getMetaModel()->getServiceContainer()->getEventDispatcher();
         $format     = $this->getDateTimeFormatString();
-        return array_map(
+        return \array_map(
             function ($value) use ($format, $dispatcher) {
                 $event = new ParseDateEvent($value, $format);
                 $dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);
