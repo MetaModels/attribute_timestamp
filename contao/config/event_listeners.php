@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2016 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,8 @@
  * @author     David Greminger <david.greminger@1up.io>
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -28,17 +29,16 @@ use MetaModels\Attribute\Timestamp\BootSubscriber;
 use MetaModels\Events\MetaModelsBootEvent;
 use MetaModels\MetaModelsEvents;
 
-return array
-(
-    MetaModelsEvents::SUBSYSTEM_BOOT => array(
+return [
+    MetaModelsEvents::SUBSYSTEM_BOOT => [
         function (MetaModelsBootEvent $event) {
             new BootSubscriber($event->getServiceContainer());
         }
-    ),
-    MetaModelsEvents::ATTRIBUTE_FACTORY_CREATE => array(
+    ],
+    MetaModelsEvents::ATTRIBUTE_FACTORY_CREATE => [
         function (CreateAttributeFactoryEvent $event) {
             $factory = $event->getFactory();
             $factory->addTypeFactory(new AttributeTypeFactory());
         }
-    )
-);
+    ]
+];

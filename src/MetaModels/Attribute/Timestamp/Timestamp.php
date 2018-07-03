@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2017 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,13 +20,15 @@
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Henry Lamorski <henry.lamorski@mailbox.org>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2017 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
 namespace MetaModels\Attribute\Timestamp;
 
+use Contao\Config;
 use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use MetaModels\Attribute\Numeric\AttributeNumeric;
@@ -49,12 +51,12 @@ class Timestamp extends AttributeNumeric
     /**
      * {@inheritDoc}
      */
-    public function getFieldDefinition($arrOverrides = array())
+    public function getFieldDefinition($arrOverrides = [])
     {
         $strDateType                 = $this->getDateTimeType();
         $arrFieldDef                 = parent::getFieldDefinition($arrOverrides);
         $arrFieldDef['eval']['rgxp'] = $strDateType;
-        
+
         if (empty($arrFieldDef['eval']['readonly'])) {
             $arrFieldDef['eval']['datepicker'] = true;
             $arrFieldDef['eval']['tl_class']  .= ' wizard';
@@ -68,9 +70,12 @@ class Timestamp extends AttributeNumeric
      */
     public function getAttributeSettingNames()
     {
-        return array_merge(parent::getAttributeSettingNames(), array(
-            'timetype',
-        ));
+        return \array_merge(
+            parent::getAttributeSettingNames(),
+            [
+                'timetype',
+            ]
+        );
     }
 
     /**
@@ -122,7 +127,7 @@ class Timestamp extends AttributeNumeric
             return $page->$format;
         }
 
-        return \Config::get($format);
+        return Config::get($format);
     }
 
     /**
@@ -136,8 +141,8 @@ class Timestamp extends AttributeNumeric
         }
 
         // If numeric we have already a integer value.
-        if (is_numeric($varValue)) {
-            return intval($varValue);
+        if (\is_numeric($varValue)) {
+            return (int) $varValue;
         }
 
         // @deprecated Parsing of string times is deprecated. Use the EncodePropertyValueFromWidgetEvent of the DCG
@@ -154,7 +159,7 @@ class Timestamp extends AttributeNumeric
     {
         $dispatcher = $this->getMetaModel()->getServiceContainer()->getEventDispatcher();
         $format     = $this->getDateTimeFormatString();
-        return array_map(
+        return \array_map(
             function ($value) use ($format, $dispatcher) {
                 $event = new ParseDateEvent($value, $format);
                 $dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);

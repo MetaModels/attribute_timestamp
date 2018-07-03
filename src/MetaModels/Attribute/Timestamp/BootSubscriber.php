@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2016 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,7 +15,8 @@
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -44,11 +45,11 @@ class BootSubscriber extends BaseSubscriber
         $this
             ->addListener(
                 EncodePropertyValueFromWidgetEvent::NAME,
-                array($this, 'handleEncodePropertyValueFromWidget')
+                [$this, 'handleEncodePropertyValueFromWidget']
             )
             ->addListener(
                 DecodePropertyValueForWidgetEvent::NAME,
-                array($this, 'handleDecodePropertyValueForWidgetEvent')
+                [$this, 'handleDecodePropertyValueForWidgetEvent']
             );
     }
 
@@ -90,7 +91,7 @@ class BootSubscriber extends BaseSubscriber
         $dispatcher = $event->getEnvironment()->getEventDispatcher();
         $value      = $event->getValue();
 
-        if (is_numeric($value)) {
+        if (\is_numeric($value)) {
             $dateEvent = new ParseDateEvent($value, $attribute->getDateTimeFormatString());
             $dispatcher->dispatch(ContaoEvents::DATE_PARSE, $dateEvent);
 
