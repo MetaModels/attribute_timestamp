@@ -142,7 +142,7 @@ class Timestamp extends AttributeNumeric
 
         // If numeric we have already a integer value.
         if (\is_numeric($varValue)) {
-            return intval($varValue);
+            return (int) $varValue;
         }
 
         // @deprecated Parsing of string times is deprecated. Use the EncodePropertyValueFromWidgetEvent of the DCG
