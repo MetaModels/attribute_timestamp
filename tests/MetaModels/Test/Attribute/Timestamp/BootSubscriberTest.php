@@ -26,21 +26,22 @@ namespace MetaModels\Test\Attribute\Timestamp;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\EncodePropertyValueFromWidgetEvent;
+use ContaoCommunityAlliance\DcGeneral\Data\PropertyValueBagInterface;
 use ContaoCommunityAlliance\DcGeneral\EnvironmentInterface;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\Attribute\Timestamp\BootSubscriber;
 use MetaModels\Attribute\Timestamp\Timestamp;
-use MetaModels\IMetaModelsServiceContainer;
 use MetaModels\DcGeneral\Data\Model;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use ContaoCommunityAlliance\DcGeneral\Data\PropertyValueBagInterface;
 use MetaModels\IMetaModel;
-use MetaModels\IItem;
+use MetaModels\IMetaModelsServiceContainer;
+use MetaModels\Item;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This class tests the BackendSubscriber class.
  */
-class BootSubscriberTest extends \PHPUnit_Framework_TestCase
+class BootSubscriberTest extends TestCase
 {
     /**
      * The backend subscriber being tested.
@@ -62,10 +63,11 @@ class BootSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->eventDispatcher = $this->getMock(EventDispatcherInterface::class);
+        $this->eventDispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $this->bootSubscriber  = new BootSubscriber($this->mockServiceContainer());
-        $this->metaModel       = $this->getMock(IMetaModel::class);
-        $this->item            = $this->getMock(IItem::class, [], [$this->metaModel]);
+        $this->metaModel       = $this->getMockForAbstractClass(IMetaModel::class);
+        $this->item            =
+            $this->getMockBuilder(Item::class)->setMethods([])->setConstructorArgs([$this->metaModel, []])->getMock();
     }
 
     /**
@@ -75,7 +77,7 @@ class BootSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     private function mockServiceContainer()
     {
-        $serviceContainer = $this->getMock(IMetaModelsServiceContainer::class, [], []);
+        $serviceContainer = $this->getMockForAbstractClass(IMetaModelsServiceContainer::class);
 
         $serviceContainer
             ->expects($this->any())
@@ -92,7 +94,7 @@ class BootSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     private function mockEnvironment()
     {
-        $environment = $this->getMock(EnvironmentInterface::class, [], []);
+        $environment = $this->getMockForAbstractClass(EnvironmentInterface::class);
 
         $environment
             ->expects($this->any())
@@ -111,15 +113,10 @@ class BootSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     private function mockModelWithAttribute($attribute)
     {
-        $model = $this->getMock(
-            Model::class,
-            [],
-            [
-                $this->item
-            ]
-        );
+        $model =
+            $this->getMockBuilder(Model::class)->setMethods([])->setConstructorArgs([$this->item])->getMock();
 
-        $this->item
+        $model
             ->expects($this->any())
             ->method('getProperty')
             ->will($this->returnValue($attribute));
@@ -141,15 +138,13 @@ class BootSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     private function mockAttribute($format)
     {
-        $attribute = $this->getMock(
-            Timestamp::class,
-            [],
-            [
-                $this->metaModel
-            ],
-            '',
-            false
-        );
+        $attribute = $this
+            ->getMockBuilder(Timestamp::class)
+            ->setMethods([])
+            ->setConstructorArgs([$this->metaModel])
+            ->disableOriginalConstructor()
+            ->getMock();
+
 
         $attribute
             ->expects($this->any())
@@ -218,8 +213,7 @@ class BootSubscriberTest extends \PHPUnit_Framework_TestCase
      */
     public function it_parses_timestamp_for_widget($format, $value)
     {
-        $valuesBag =
-            $this->getMock(PropertyValueBagInterface::class, [], []);
+        $valuesBag = $this->getMockForAbstractClass(PropertyValueBagInterface::class);
 
         // Attribute will return timestamp, create it.
         $dateTime  = \DateTime::createFromFormat($format, $value);

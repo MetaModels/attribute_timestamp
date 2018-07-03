@@ -34,11 +34,12 @@ use Contao\BaseTemplate;
 use Contao\Widget;
 use Contao\Date;
 use Contao\Validator;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests to test class Timestamp.
  */
-class TimestampTest extends \PHPUnit_Framework_TestCase
+class TimestampTest extends TestCase
 {
     /**
      * The preserved timezone.
@@ -113,11 +114,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
      */
     protected function mockMetaModel($language, $fallbackLanguage)
     {
-        $metaModel = $this->getMock(
-            MetaModel::class,
-            [],
-            [[]]
-        );
+        $metaModel = $this->getMockBuilder(MetaModel::class)->setMethods([])->setConstructorArgs([[]])->getMock();
 
         $metaModel
             ->expects($this->any())
@@ -303,7 +300,11 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
             $value
         );
 
-        $widget = $this->getMock(TextField::class, ['getPost'], [$prepared]);
+        $widget = $this
+            ->getMockBuilder(TextField::class)
+            ->setMethods(['getPost'])
+            ->setConstructorArgs([$prepared])
+            ->getMock();
         $widget->expects($this->any())->method('getPost')->will($this->returnValue($value));
 
         /** @var TextField $widget */
