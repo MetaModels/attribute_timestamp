@@ -25,6 +25,8 @@ use MetaModels\Attribute\IAttributeTypeFactory;
 use MetaModels\Attribute\Timestamp\AttributeTypeFactory;
 use MetaModels\IMetaModel;
 use MetaModels\Test\Attribute\AttributeTypeFactoryTest;
+use MetaModels\MetaModel;
+use MetaModels\Attribute\Timestamp\Timestamp;
 
 /**
  * Test the attribute factory.
@@ -45,7 +47,7 @@ class TimestampAttributeTypeFactoryTest extends AttributeTypeFactoryTest
     protected function mockMetaModel($tableName, $language, $fallbackLanguage)
     {
         $metaModel = $this->getMock(
-            'MetaModels\MetaModel',
+            MetaModel::class,
             [],
             [[]]
         );
@@ -92,7 +94,7 @@ class TimestampAttributeTypeFactoryTest extends AttributeTypeFactoryTest
             $this->mockMetaModel('mm_test', 'de', 'en')
         );
 
-        $this->assertInstanceOf('MetaModels\Attribute\Timestamp\Timestamp', $attribute);
+        $this->assertInstanceOf(Timestamp::class, $attribute);
 
         foreach ($values as $key => $value) {
             $this->assertEquals($value, $attribute->get($key), $key);

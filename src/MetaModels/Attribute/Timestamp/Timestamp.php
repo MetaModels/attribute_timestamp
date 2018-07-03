@@ -28,6 +28,7 @@
 
 namespace MetaModels\Attribute\Timestamp;
 
+use Contao\Config;
 use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use MetaModels\Attribute\Numeric\AttributeNumeric;
@@ -126,7 +127,7 @@ class Timestamp extends AttributeNumeric
             return $page->$format;
         }
 
-        return \Config::get($format);
+        return Config::get($format);
     }
 
     /**

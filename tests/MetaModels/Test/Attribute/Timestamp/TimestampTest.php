@@ -23,9 +23,17 @@
 
 namespace MetaModels\Test\Attribute\Timestamp;
 
+use Contao\Config;
 use Contao\TextField;
 use MetaModels\Attribute\Timestamp\Timestamp;
 use MetaModels\IMetaModel;
+use MetaModels\MetaModel;
+use Contao\System;
+use Contao\Controller;
+use Contao\BaseTemplate;
+use Contao\Widget;
+use Contao\Date;
+use Contao\Validator;
 
 /**
  * Unit tests to test class Timestamp.
@@ -55,28 +63,28 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
         if (!defined('TL_MODE')) {
             define('TL_MODE', 'BE');
             $this
-                ->getMockBuilder('Contao\\System')
+                ->getMockBuilder(System::class)
                 ->setMockClassName('System')
                 ->setMethods(['import'])
                 ->disableOriginalConstructor()
                 ->getMock();
             $this
-                ->getMockBuilder('Contao\\Config')
+                ->getMockBuilder(Config::class)
                 ->setMockClassName('Config')
                 ->setMethods(['initialize', 'preload', 'markModified', 'save'])
                 ->disableOriginalConstructor()
                 ->getMock();
 
-            class_alias('Contao\\Controller', 'Controller');
+            class_alias(Controller::class, 'Controller');
             try {
-                class_alias('Contao\\BaseTemplate', 'BaseTemplate');
+                class_alias(BaseTemplate::class, 'BaseTemplate');
             } catch (\Exception $exception) {
                 // BaseTemplate came available with Contao 3.3.
             }
 
-            class_alias('Contao\\Widget', 'Widget');
-            class_alias('Contao\\Date', 'Date');
-            class_alias('Contao\\Validator', 'Validator');
+            class_alias(Widget::class, 'Widget');
+            class_alias(Date::class, 'Date');
+            class_alias(Validator::class, 'Validator');
             // Some error strings for the validator.
             $GLOBALS['TL_LANG']['ERR']['date']        = '%s';
             $GLOBALS['TL_LANG']['ERR']['invalidDate'] = '%s';
@@ -106,7 +114,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
     protected function mockMetaModel($language, $fallbackLanguage)
     {
         $metaModel = $this->getMock(
-            'MetaModels\MetaModel',
+            MetaModel::class,
             [],
             [[]]
         );
@@ -175,7 +183,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
     public function testInstantiation()
     {
         $attribute = new Timestamp($this->mockMetaModel('en', 'en'));
-        $this->assertInstanceOf('MetaModels\Attribute\Timestamp\Timestamp', $attribute);
+        $this->assertInstanceOf(Timestamp::class, $attribute);
     }
 
     /**
@@ -231,7 +239,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
         if (!in_array('set', get_class_methods('Config'))) {
             $GLOBALS['TL_CONFIG'][$key] = $value;
         } else {
-            \Config::set($key, $value);
+            Config::set($key, $value);
         }
     }
 
@@ -295,7 +303,7 @@ class TimestampTest extends \PHPUnit_Framework_TestCase
             $value
         );
 
-        $widget = $this->getMock('Contao\TextField', ['getPost'], [$prepared]);
+        $widget = $this->getMock(TextField::class, ['getPost'], [$prepared]);
         $widget->expects($this->any())->method('getPost')->will($this->returnValue($value));
 
         /** @var TextField $widget */
