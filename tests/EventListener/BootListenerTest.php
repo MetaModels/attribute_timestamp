@@ -21,21 +21,26 @@
  * @filesource
  */
 
-namespace MetaModels\AttributeTimestampBundle\Test\EventListener\Timestamp;
+namespace MetaModels\AttributeTimestampBundle\Test\EventListener;
 
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\EncodePropertyValueFromWidgetEvent;
+use ContaoCommunityAlliance\DcGeneral\Data\PropertyValueBagInterface;
 use ContaoCommunityAlliance\DcGeneral\EnvironmentInterface;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\AttributeTimestampBundle\Attribute\Timestamp;
 use MetaModels\AttributeTimestampBundle\EventListener\BootListener;
 use MetaModels\DcGeneral\Data\Model;
+use MetaModels\IMetaModel;
+use MetaModels\Item;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This class tests the BackendSubscriber class.
  */
-class BootListenerTest extends \PHPUnit_Framework_TestCase
+class BootListenerTest extends TestCase
 {
     /**
      * The backend subscriber being tested.
@@ -57,10 +62,11 @@ class BootListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $this->eventDispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $this->bootSubscriber  = new BootListener();
-        $this->metaModel       = $this->getMock('MetaModels\IMetaModel');
-        $this->item            = $this->getMock('MetaModels\IItem', array(), array($this->metaModel));
+        $this->metaModel       = $this->getMockForAbstractClass(IMetaModel::class);
+        $this->item            =
+            $this->getMockBuilder(Item::class)->setMethods([])->setConstructorArgs([$this->metaModel, []])->getMock();
     }
 
     /**
@@ -70,7 +76,7 @@ class BootListenerTest extends \PHPUnit_Framework_TestCase
      */
     private function mockEnvironment()
     {
-        $environment = $this->getMock('ContaoCommunityAlliance\DcGeneral\EnvironmentInterface', array(), array());
+        $environment = $this->getMockForAbstractClass(EnvironmentInterface::class);
 
         $environment
             ->expects($this->any())
@@ -89,15 +95,10 @@ class BootListenerTest extends \PHPUnit_Framework_TestCase
      */
     private function mockModelWithAttribute($attribute)
     {
-        $model = $this->getMock(
-            'MetaModels\DcGeneral\Data\Model',
-            array(),
-            array(
-                $this->item
-            )
-        );
+        $model =
+            $this->getMockBuilder(Model::class)->setMethods([])->setConstructorArgs([$this->item])->getMock();
 
-        $this->item
+        $model
             ->expects($this->any())
             ->method('getProperty')
             ->will($this->returnValue($attribute));
@@ -119,15 +120,13 @@ class BootListenerTest extends \PHPUnit_Framework_TestCase
      */
     private function mockAttribute($format)
     {
-        $attribute = $this->getMock(
-            'MetaModels\Attribute\Timestamp\Timestamp',
-            array(),
-            array(
-                $this->metaModel
-            ),
-            '',
-            false
-        );
+        $attribute = $this
+            ->getMockBuilder(Timestamp::class)
+            ->setMethods([])
+            ->setConstructorArgs([$this->metaModel])
+            ->disableOriginalConstructor()
+            ->getMock();
+
 
         $attribute
             ->expects($this->any())
@@ -151,7 +150,7 @@ class BootListenerTest extends \PHPUnit_Framework_TestCase
     public function it_is_initializable()
     {
         $subscriber = new BootListener();
-        $this->assertInstanceOf('MetaModels\Attribute\Timestamp\BootSubscriber', $subscriber);
+        $this->assertInstanceOf(BootListener::class, $subscriber);
     }
 
     /**
@@ -161,28 +160,28 @@ class BootListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function dataProvider()
     {
-        return array(
-            array(
+        return [
+            [
                 'format' => 'd-m-Y',
                 'value'  => '01-01-2000',
-            ),
-            array(
+            ],
+            [
                 'format' => 'd-m-Y',
                 'value'  => '15-11-1980',
-            ),
-            array(
+            ],
+            [
                 'format' => 'd-m-Y H:i:s',
                 'value'  => '15-11-1980 11:22:33',
-            ),
-            array(
+            ],
+            [
                 'format' => 'H:i:s',
                 'value'  => '11:22:33',
-            ),
-            array(
+            ],
+            [
                 'format' => 'H:i',
                 'value'  => '20:00',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -196,8 +195,7 @@ class BootListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_parses_timestamp_for_widget($format, $value)
     {
-        $valuesBag =
-            $this->getMock('ContaoCommunityAlliance\DcGeneral\Data\PropertyValueBagInterface', array(), array());
+        $valuesBag = $this->getMockForAbstractClass(PropertyValueBagInterface::class);
 
         // Attribute will return timestamp, create it.
         $dateTime  = \DateTime::createFromFormat($format, $value);

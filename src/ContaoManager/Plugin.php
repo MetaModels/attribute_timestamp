@@ -3,7 +3,7 @@
 /**
  * * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2017 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,8 @@
  * @package    MetaModels
  * @subpackage AttributeTimestamp
  * @author     David Molineus <david.molineus@netzmacht.de>
- * @copyright  2012-2017 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_text/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -23,7 +24,7 @@ namespace MetaModels\AttributeTimestampBundle\ContaoManager;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
-use MetaModels\Attribute\Numeric\MetaModelsAttributeNumericBundle;
+use MetaModels\AttributeNumericBundle\MetaModelsAttributeNumericBundle;
 use MetaModels\AttributeTimestampBundle\MetaModelsAttributeTimestampBundle;
 use MetaModels\CoreBundle\MetaModelsCoreBundle;
 
