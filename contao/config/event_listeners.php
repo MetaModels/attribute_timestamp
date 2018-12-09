@@ -13,8 +13,6 @@
  * @package    MetaModels
  * @subpackage AttributeTimestamp
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @author     Andreas Isaak <info@andreas-isaak.de>
- * @author     David Greminger <david.greminger@1up.io>
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
