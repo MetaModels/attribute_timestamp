@@ -12,9 +12,6 @@
  *
  * @package    MetaModels/attribute_timestamp
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @author     David Molineus <david.molineus@netzmacht.de>
- * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
- * @author     Sven Baumann <baumann.sv@gmail.com>
  * @copyright  2012-2019 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
@@ -49,10 +46,25 @@ class BootListener
         }
 
         $date = \DateTime::createFromFormat($attribute->getDateTimeFormatString(), $event->getValue());
-
-        if ($date) {
-            $event->setValue($date->getTimestamp());
+        if (!$date) {
+            return;
         }
+        $properties = $event->getEnvironment()->getDataDefinition()->getPropertiesDefinition();
+        $property   = $properties->getProperty($event->getProperty());
+        $extra      = $property->getExtra();
+        if (isset($extra['clear_datetime'])) {
+            switch ($extra['clear_datetime']) {
+                case 'time':
+                    $date->setTime(0, 0, 0);
+                    break;
+                case 'date':
+                    $date->setDate(0, 0, 0);
+                    break;
+                default:
+            }
+        }
+
+        $event->setValue($date->getTimestamp());
     }
 
     /**

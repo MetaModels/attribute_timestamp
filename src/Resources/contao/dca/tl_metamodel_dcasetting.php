@@ -28,9 +28,26 @@ $GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['metasubselectpalettes']['attr_id'
     ],
     'functions'    => [
         'mandatory',
+        'clear_datetime',
     ],
     'overview'     => [
         'filterable',
         'searchable',
+    ],
+];
+
+$GLOBALS['TL_DCA']['tl_metamodel_dcasetting']['fields']['clear_datetime'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_dcasetting']['clear_datetime'],
+    'exclude'   => true,
+    'inputType' => 'select',
+    'reference' => &$GLOBALS['TL_LANG']['tl_metamodel_dcasetting']['clear_datetime_options'],
+    'options'   => [
+        'time',
+        'date',
+    ],
+    'sql'       => 'varchar(64) NOT NULL default \'\'',
+    'eval'      => [
+        'tl_class'       => 'w50',
+        'includeBlankOption' => true
     ],
 ];

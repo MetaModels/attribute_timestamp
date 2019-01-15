@@ -105,6 +105,7 @@ class Timestamp extends Numeric
             $arrFieldDef['eval']['datepicker'] = true;
             $arrFieldDef['eval']['tl_class']  .= ' wizard';
         }
+        $arrFieldDef['eval']['clear_datetime'] = ($arrOverrides['clear_datetime'] ?? null);
 
         return $arrFieldDef;
     }
@@ -118,6 +119,7 @@ class Timestamp extends Numeric
             parent::getAttributeSettingNames(),
             [
                 'timetype',
+                'clear_datetime'
             ]
         );
     }
