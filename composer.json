@@ -32,17 +32,16 @@
   },
   "require": {
     "php": "^5.6 || ^7.0",
-    "contao/core-bundle": "^4.4",
     "contao-community-alliance/dc-general": "^2.1@dev",
-    "metamodels/core": "^2.1@dev",
+    "contao/core-bundle": "^4.4",
     "metamodels/attribute_numeric": "^2.1@dev",
+    "metamodels/core": "^2.1@dev",
     "symfony/dependency-injection": "^3.3 || ^4.0",
     "symfony/http-kernel": "^3.3 || ^4.0"
   },
   "require-dev": {
-    "cyberspectrum/contao-toolbox": "^0.7",
-    "phpcq/all-tasks": "^1.2",
-    "contao/manager-bundle": "4.4"
+    "contao/manager-bundle": "4.4",
+    "phpcq/all-tasks": "^1.2"
   },
   "autoload": {
     "psr-4": {
@@ -63,12 +62,9 @@
   "extra": {
     "contao-manager-plugin": "MetaModels\\AttributeTimestampBundle\\ContaoManager\\Plugin",
     "contao": {
-      "transifex": {
-        "project": "metamodels",
-        "prefix": "attribute_timestamp-",
-        "languages_cto": "src/Resources/contao/languages",
-        "languages_tx": ".tx"
-      }
+      "runonce": [
+        "runonce/runonce.php"
+      ]
     },
     "branch-alias": {
       "dev-master": "2.0.x-dev",
@@ -84,5 +80,8 @@
       "type": "vcs",
       "url": "git@gitlab.com:metamodels/attribute_numeric.git"
     }
-  ]
+  ],
+  "config": {
+    "sort-packages": true
+  }
 }
