@@ -18,39 +18,22 @@
  * @filesource
  */
 
-error_reporting(E_ALL);
-
-function includeIfExists($file)
-{
-    return file_exists($file) ? include $file : false;
-}
-
-if (
-    // Locally installed dependencies
-    (!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php'))
-    // We are within an composer install.
-    && (!$loader = includeIfExists(__DIR__.'/../../../autoload.php'))) {
-    echo 'You must set up the project dependencies, run the following commands:'.PHP_EOL.
-        'curl -sS https://getcomposer.org/installer | php'.PHP_EOL.
-        'php composer.phar install'.PHP_EOL;
-    exit(1);
-}
-
 /**
- * Return an unserialized array or the argument
- * @param mixed
- * @param boolean
+ * Return an unserialized array or the argument.
+ *
+ * @param mixed $varValue      The value to decode.
+ * @param bool  $blnForceArray Flag if an array should be enforced.
+ *
  * @return mixed
  */
-function deserialize($varValue, $blnForceArray=false)
+function deserialize($varValue, $blnForceArray = false)
 {
     // Already an array
     if (is_array($varValue)) {
         return $varValue;
     }
 
-    // Null
-    if ($varValue === null) {
+    if (null === $varValue) {
         return $blnForceArray ? array() : null;
     }
 
@@ -60,11 +43,13 @@ function deserialize($varValue, $blnForceArray=false)
     }
 
     // Empty string
-    if (trim($varValue) == '') {
+    if ('' === trim($varValue)) {
         return $blnForceArray ? array() : '';
     }
 
+    // @codingStandardsIgnoreStart
     $varUnserialized = @unserialize($varValue);
+    // @codingStandardsIgnoreEnd
 
     if (is_array($varUnserialized)) {
         $varValue = $varUnserialized;

@@ -76,15 +76,13 @@ class TimestampTest extends TestCase
                 ->getMock();
 
             \class_alias(Controller::class, 'Controller');
-            try {
-                \class_alias(BaseTemplate::class, 'BaseTemplate');
-            } catch (\Exception $exception) {
-                // BaseTemplate came available with Contao 3.3.
-            }
-
+            \class_alias(BaseTemplate::class, 'BaseTemplate');
             \class_alias(Widget::class, 'Widget');
             \class_alias(Date::class, 'Date');
             \class_alias(Validator::class, 'Validator');
+
+            require_once __DIR__ . '/functions.php';
+
             // Some error strings for the validator.
             $GLOBALS['TL_LANG']['ERR']['date']        = '%s';
             $GLOBALS['TL_LANG']['ERR']['invalidDate'] = '%s';
