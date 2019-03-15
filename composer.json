@@ -34,8 +34,8 @@
     "php": "^7.1",
     "contao-community-alliance/dc-general": "^2.1.0",
     "contao/core-bundle": "^4.4.8",
-    "metamodels/attribute_numeric": "^2.1@dev",
-    "metamodels/core": "^2.1@dev",
+    "metamodels/attribute_numeric": "^2.1",
+    "metamodels/core": "^2.1",
     "symfony/dependency-injection": "^3.3 || ^4.0",
     "symfony/http-kernel": "^3.3 || ^4.0"
   },
@@ -63,7 +63,7 @@
   "extra": {
     "contao-manager-plugin": "MetaModels\\AttributeTimestampBundle\\ContaoManager\\Plugin",
     "branch-alias": {
-      "dev-release/2.1.0": "2.1.x-dev"
+      "dev-master": "2.1.x-dev"
     }
   },
   "config": {
