@@ -25,20 +25,65 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Timestamp;
+namespace MetaModels\AttributeTimestampBundle\Attribute;
 
+use Contao\System;
 use Contao\Config;
 use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
-use MetaModels\Attribute\Numeric\AttributeNumeric;
+use Doctrine\DBAL\Connection;
+use MetaModels\AttributeNumericBundle\Attribute\Numeric;
+use MetaModels\Helper\TableManipulator;
+use MetaModels\IMetaModel;
 use MetaModels\Render\Setting\ISimple;
 use MetaModels\Render\Template;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This is the MetaModelAttribute class for handling text fields.
  */
-class Timestamp extends AttributeNumeric
+class Timestamp extends Numeric
 {
+    /**
+     * The event dispatcher.
+     *
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
+     * Instantiate an MetaModel attribute.
+     *
+     * Note that you should not use this directly but use the factory classes to instantiate attributes.
+     *
+     * @param IMetaModel                    $objMetaModel     The MetaModel instance this attribute belongs to.
+     * @param array                         $arrData          The information array for the attribute.
+     * @param Connection                    $connection       The database connection.
+     * @param TableManipulator              $tableManipulator Table manipulator instance.
+     * @param EventDispatcherInterface|null $dispatcher       The event dispatcher.
+     */
+    public function __construct(
+        IMetaModel $objMetaModel,
+        array $arrData = [],
+        Connection $connection = null,
+        TableManipulator $tableManipulator = null,
+        EventDispatcherInterface $dispatcher = null
+    ) {
+        parent::__construct($objMetaModel, $arrData, $connection, $tableManipulator);
+
+        if (null === $dispatcher) {
+            // @codingStandardsIgnoreStart
+            @\trigger_error(
+                'Table event dispatcher is missing. It has to be passed in the constructor. Fallback will be dropped.',
+                E_USER_DEPRECATED
+            );
+            // @codingStandardsIgnoreEnd
+
+            $dispatcher = System::getContainer()->get('event_dispatcher');
+        }
+        $this->dispatcher = $dispatcher;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -82,8 +127,6 @@ class Timestamp extends AttributeNumeric
      */
     protected function prepareTemplate(Template $objTemplate, $arrRowData, $objSettings)
     {
-        $dispatcher = $this->getMetaModel()->getServiceContainer()->getEventDispatcher();
-
         parent::prepareTemplate($objTemplate, $arrRowData, $objSettings);
 
         /** @var ISimple $objSettings */
@@ -94,9 +137,8 @@ class Timestamp extends AttributeNumeric
         }
 
         if (!empty($objTemplate->raw)) {
-            /** @var \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher */
             $event = new ParseDateEvent($objTemplate->raw, $objTemplate->format);
-            $dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);
+            $this->dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);
             $objTemplate->parsedDate = $event->getResult();
         } else {
             $objTemplate->parsedDate = null;
@@ -156,12 +198,11 @@ class Timestamp extends AttributeNumeric
      */
     public function getFilterOptions($idList, $usedOnly, &$arrCount = null)
     {
-        $dispatcher = $this->getMetaModel()->getServiceContainer()->getEventDispatcher();
-        $format     = $this->getDateTimeFormatString();
+        $format = $this->getDateTimeFormatString();
         return \array_map(
-            function ($value) use ($format, $dispatcher) {
+            function ($value) use ($format) {
                 $event = new ParseDateEvent($value, $format);
-                $dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);
+                $this->dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);
 
                 return $event->getResult();
             },

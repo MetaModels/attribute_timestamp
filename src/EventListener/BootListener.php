@@ -20,38 +20,20 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Timestamp;
+namespace MetaModels\AttributeTimestampBundle\EventListener;
 
 use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\EncodePropertyValueFromWidgetEvent;
+use MetaModels\AttributeTimestampBundle\Attribute\Timestamp;
 use MetaModels\DcGeneral\Data\Model;
-use MetaModels\DcGeneral\Events\BaseSubscriber;
 
 /**
  * Handles event operations for timestamp attributes.
  */
-class BootSubscriber extends BaseSubscriber
+class BootListener
 {
-    /**
-     * Register all listeners to handle creation of a data container.
-     *
-     * @return void
-     */
-    protected function registerEventsInDispatcher()
-    {
-        $this
-            ->addListener(
-                EncodePropertyValueFromWidgetEvent::NAME,
-                [$this, 'handleEncodePropertyValueFromWidget']
-            )
-            ->addListener(
-                DecodePropertyValueForWidgetEvent::NAME,
-                [$this, 'handleDecodePropertyValueForWidgetEvent']
-            );
-    }
-
     /**
      * Encode an timestamp attribute value from a widget value.
      *

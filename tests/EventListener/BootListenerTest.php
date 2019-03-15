@@ -20,7 +20,7 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Attribute\Timestamp;
+namespace MetaModels\AttributeTimestampBundle\Test\EventListener;
 
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
@@ -28,11 +28,10 @@ use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\Encod
 use ContaoCommunityAlliance\DcGeneral\Data\PropertyValueBagInterface;
 use ContaoCommunityAlliance\DcGeneral\EnvironmentInterface;
 use MetaModels\Attribute\IAttribute;
-use MetaModels\Attribute\Timestamp\BootSubscriber;
-use MetaModels\Attribute\Timestamp\Timestamp;
+use MetaModels\AttributeTimestampBundle\Attribute\Timestamp;
+use MetaModels\AttributeTimestampBundle\EventListener\BootListener;
 use MetaModels\DcGeneral\Data\Model;
 use MetaModels\IMetaModel;
-use MetaModels\IMetaModelsServiceContainer;
 use MetaModels\Item;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -40,12 +39,12 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
  * This class tests the BackendSubscriber class.
  */
-class BootSubscriberTest extends TestCase
+class BootListenerTest extends TestCase
 {
     /**
      * The backend subscriber being tested.
      *
-     * @var BootSubscriber
+     * @var BootListener
      */
     private $bootSubscriber;
 
@@ -63,27 +62,10 @@ class BootSubscriberTest extends TestCase
     public function setUp()
     {
         $this->eventDispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
-        $this->bootSubscriber  = new BootSubscriber($this->mockServiceContainer());
+        $this->bootSubscriber  = new BootListener();
         $this->metaModel       = $this->getMockForAbstractClass(IMetaModel::class);
         $this->item            =
             $this->getMockBuilder(Item::class)->setMethods([])->setConstructorArgs([$this->metaModel, []])->getMock();
-    }
-
-    /**
-     * Mock the service container.
-     *
-     * @return IMetaModelsServiceContainer
-     */
-    private function mockServiceContainer()
-    {
-        $serviceContainer = $this->getMockForAbstractClass(IMetaModelsServiceContainer::class);
-
-        $serviceContainer
-            ->expects($this->any())
-            ->method('getEventDispatcher')
-            ->will($this->returnValue($this->eventDispatcher));
-
-        return $serviceContainer;
     }
 
     /**
@@ -166,8 +148,8 @@ class BootSubscriberTest extends TestCase
      */
     public function it_is_initializable()
     {
-        $subscriber = new BootSubscriber($this->mockServiceContainer());
-        $this->assertInstanceOf(BootSubscriber::class, $subscriber);
+        $subscriber = new BootListener();
+        $this->assertInstanceOf(BootListener::class, $subscriber);
     }
 
     /**

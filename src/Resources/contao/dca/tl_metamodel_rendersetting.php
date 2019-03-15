@@ -13,8 +13,9 @@
  * @package    MetaModels/attribute_timestamp
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
- * @author     Andreas Isaak <info@andreas-isaak.de>
  * @author     David Greminger <david.greminger@1up.io>
+ * @author     David Molineus <david.molineus@netzmacht.de>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @copyright  2012-2019 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
@@ -22,10 +23,18 @@
  */
 
 /**
- * Register the templates
+ * Table tl_metamodel_attribute
  */
-\Contao\TemplateLoader::addFiles(
-    [
-        'mm_attr_timestamp' => 'system/modules/metamodelsattribute_timestamp/templates',
-    ]
-);
+$GLOBALS['TL_DCA']['tl_metamodel_rendersetting']['metapalettes']['timestamp extends default'] = [
+    'timesettings' => ['timeformat'],
+];
+
+$GLOBALS['TL_DCA']['tl_metamodel_rendersetting']['fields']['timeformat'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_rendersetting']['timeformat'],
+    'exclude'   => true,
+    'inputType' => 'text',
+    'sql'       => 'varchar(64) NOT NULL default \'\'',
+    'eval'      => [
+        'tl_class' => 'w50',
+    ],
+];
