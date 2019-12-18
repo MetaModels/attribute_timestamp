@@ -89,7 +89,7 @@ class Timestamp extends Numeric
      */
     public function getSQLDataType()
     {
-        return 'bigint(10) NULL default NULL';
+        return 'bigint(10) NULL';
     }
 
     /**
@@ -221,5 +221,15 @@ class Timestamp extends Numeric
     protected function getObjPage()
     {
         return isset($GLOBALS['objPage']) ? $GLOBALS['objPage'] : null;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * This is needed for compatibility with MySQL strict mode.
+     */
+    public function serializeData($value)
+    {
+        return $value === '' ? null : $value;
     }
 }
