@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2019 The MetaModels team.
+ * (c) 2012-2020 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,10 +12,13 @@
  *
  * @package    MetaModels/attribute_timestamp
  * @author     David Molineus <david.molineus@netzmacht.de>
- * @copyright  2012-2019 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2012-2020 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
+
+declare(strict_types = 1);
 
 namespace MetaModels\AttributeTimestampBundle\Test\DependencyInjection;
 
@@ -24,6 +27,7 @@ use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\Encod
 use MetaModels\AttributeTimestampBundle\Attribute\AttributeTypeFactory;
 use MetaModels\AttributeTimestampBundle\DependencyInjection\MetaModelsAttributeTimestampExtension;
 use MetaModels\AttributeTimestampBundle\EventListener\BootListener;
+use MetaModels\AttributeTimestampBundle\Migration\AllowNullMigration;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -52,12 +56,12 @@ class MetaModelsAttributeTimestampExtensionTest extends TestCase
      *
      * @return void
      */
-    public function testFactoryIsRegistered()
+    public function testRegistersServices()
     {
         $container = $this->getMockBuilder(ContainerBuilder::class)->getMock();
 
         $container
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(4))
             ->method('setDefinition')
             ->withConsecutive(
                 [
@@ -76,6 +80,22 @@ class MetaModelsAttributeTimestampExtensionTest extends TestCase
                 [
                     $this->anything(),
                     $this->anything(),
+                ],
+                [
+                    $this->anything(),
+                    $this->anything(),
+                ],
+                [
+                    AllowNullMigration::class,
+                    $this->callback(
+                        function ($value) {
+                            /** @var Definition $value */
+                            $this->assertInstanceOf(Definition::class, $value);
+                            $this->assertCount(1, $value->getTag('contao.migration'));
+
+                            return true;
+                        }
+                    )
                 ]
             );
 
@@ -93,7 +113,7 @@ class MetaModelsAttributeTimestampExtensionTest extends TestCase
         $container = $this->getMockBuilder(ContainerBuilder::class)->getMock();
 
         $container
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(4))
             ->method('setDefinition')
             ->withConsecutive(
                 [

@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2019 The MetaModels team.
+ * (c) 2012-2020 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,7 +15,9 @@
  * @author     David Greminger <david.greminger@1up.io>
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2019 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @author     Stefan Heimes <stefan_heimes@hotmail.com>
+ * @copyright  2012-2020 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -84,7 +86,7 @@ class TimestampTest extends TestCase
                 ->setMockClassName('System')
                 ->setMethods(['import'])
                 ->disableOriginalConstructor()
-                ->getMock();
+                ->getMockForAbstractClass();
             $this
                 ->getMockBuilder(Config::class)
                 ->setMockClassName('Config')
@@ -353,7 +355,7 @@ class TimestampTest extends TestCase
         );
 
         $widget = $this->getMockBuilder(TextField::class)
-            ->setMethods(['getPost'])
+            ->setMethods(['getPost', 'import'])
             ->setConstructorArgs([$prepared])
             ->getMock();
 
