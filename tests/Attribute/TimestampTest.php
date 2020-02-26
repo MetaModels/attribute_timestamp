@@ -85,7 +85,7 @@ class TimestampTest extends TestCase
                 ->setMockClassName('System')
                 ->setMethods(['import'])
                 ->disableOriginalConstructor()
-                ->getMock();
+                ->getMockForAbstractClass();
             $this
                 ->getMockBuilder(Config::class)
                 ->setMockClassName('Config')
