@@ -25,3 +25,9 @@ services:
                 event: 'dc-general.view.contao2backend.decode-property-value-for-widget',
                 method: handleDecodePropertyValueForWidgetEvent
               }
+
+    MetaModels\AttributeTimestampBundle\Migration\AllowNullMigration:
+        arguments:
+            - '@database_connection'
+        tags:
+            - name: contao.migration
