@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2020 The MetaModels team.
+ * (c) 2012-2021 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,8 @@
  * @package    MetaModels/attribute_timestamp
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2020 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2021 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -35,6 +36,8 @@ use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 /**
  * This test case test the extension.
+ *
+ * @covers \MetaModels\AttributeTimestampBundle\DependencyInjection\MetaModelsAttributeTimestampExtension
  */
 class MetaModelsAttributeTimestampExtensionTest extends TestCase
 {
@@ -47,8 +50,8 @@ class MetaModelsAttributeTimestampExtensionTest extends TestCase
     {
         $extension = new MetaModelsAttributeTimestampExtension();
 
-        $this->assertInstanceOf(MetaModelsAttributeTimestampExtension::class, $extension);
-        $this->assertInstanceOf(ExtensionInterface::class, $extension);
+        self::assertInstanceOf(MetaModelsAttributeTimestampExtension::class, $extension);
+        self::assertInstanceOf(ExtensionInterface::class, $extension);
     }
 
     /**
@@ -61,12 +64,12 @@ class MetaModelsAttributeTimestampExtensionTest extends TestCase
         $container = $this->getMockBuilder(ContainerBuilder::class)->getMock();
 
         $container
-            ->expects($this->exactly(4))
+            ->expects(self::exactly(4))
             ->method('setDefinition')
             ->withConsecutive(
                 [
                     'metamodels.attribute_timestamp.factory',
-                    $this->callback(
+                    self::callback(
                         function ($value) {
                             /** @var Definition $value */
                             $this->assertInstanceOf(Definition::class, $value);
@@ -78,16 +81,16 @@ class MetaModelsAttributeTimestampExtensionTest extends TestCase
                     )
                 ],
                 [
-                    $this->anything(),
-                    $this->anything(),
+                    self::anything(),
+                    self::anything(),
                 ],
                 [
-                    $this->anything(),
-                    $this->anything(),
+                    self::anything(),
+                    self::anything(),
                 ],
                 [
                     AllowNullMigration::class,
-                    $this->callback(
+                    self::callback(
                         function ($value) {
                             /** @var Definition $value */
                             $this->assertInstanceOf(Definition::class, $value);
@@ -113,16 +116,16 @@ class MetaModelsAttributeTimestampExtensionTest extends TestCase
         $container = $this->getMockBuilder(ContainerBuilder::class)->getMock();
 
         $container
-            ->expects($this->exactly(4))
+            ->expects(self::exactly(4))
             ->method('setDefinition')
             ->withConsecutive(
                 [
-                    $this->anything(),
-                    $this->anything(),
+                    self::anything(),
+                    self::anything(),
                 ],
                 [
                     'metamodels.attribute_timestamp.backend.encode_property_value_from_widget_listener',
-                    $this->callback(
+                    self::callback(
                         function ($value) {
                             /** @var Definition $value */
                             $this->assertInstanceOf(Definition::class, $value);
@@ -140,7 +143,7 @@ class MetaModelsAttributeTimestampExtensionTest extends TestCase
                 ],
                 [
                     'metamodels.attribute_timestamp.backend.decode_property_value_for_widget_listener',
-                    $this->callback(
+                    self::callback(
                         function ($value) {
                             /** @var Definition $value */
                             $this->assertInstanceOf(Definition::class, $value);
@@ -172,12 +175,12 @@ class MetaModelsAttributeTimestampExtensionTest extends TestCase
      */
     private function assertEventListener(Definition $definition, $eventName, $methodName)
     {
-        $this->assertCount(1, $definition->getTag('kernel.event_listener'));
-        $this->assertArrayHasKey(0, $definition->getTag('kernel.event_listener'));
-        $this->assertArrayHasKey('event', $definition->getTag('kernel.event_listener')[0]);
-        $this->assertArrayHasKey('method', $definition->getTag('kernel.event_listener')[0]);
+        self::assertCount(1, $definition->getTag('kernel.event_listener'));
+        self::assertArrayHasKey(0, $definition->getTag('kernel.event_listener'));
+        self::assertArrayHasKey('event', $definition->getTag('kernel.event_listener')[0]);
+        self::assertArrayHasKey('method', $definition->getTag('kernel.event_listener')[0]);
 
-        $this->assertEquals($eventName, $definition->getTag('kernel.event_listener')[0]['event']);
-        $this->assertEquals($methodName, $definition->getTag('kernel.event_listener')[0]['method']);
+        self::assertEquals($eventName, $definition->getTag('kernel.event_listener')[0]['event']);
+        self::assertEquals($methodName, $definition->getTag('kernel.event_listener')[0]['method']);
     }
 }

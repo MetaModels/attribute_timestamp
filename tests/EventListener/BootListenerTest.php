@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2019 The MetaModels team.
+ * (c) 2012-2021 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,7 +15,7 @@
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2019 The MetaModels team.
+ * @copyright  2012-2021 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -38,6 +38,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This class tests the BackendSubscriber class.
+ *
+ * @covers \MetaModels\AttributeTimestampBundle\EventListener\BootListener
  */
 class BootListenerTest extends TestCase
 {
@@ -59,7 +61,7 @@ class BootListenerTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->eventDispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $this->bootSubscriber  = new BootListener();
@@ -78,9 +80,9 @@ class BootListenerTest extends TestCase
         $environment = $this->getMockForAbstractClass(EnvironmentInterface::class);
 
         $environment
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getEventDispatcher')
-            ->will($this->returnValue($this->eventDispatcher));
+            ->willReturn($this->eventDispatcher);
 
         return $environment;
     }
@@ -98,14 +100,14 @@ class BootListenerTest extends TestCase
             $this->getMockBuilder(Model::class)->setMethods([])->setConstructorArgs([$this->item])->getMock();
 
         $model
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getProperty')
-            ->will($this->returnValue($attribute));
+            ->willReturn($attribute);
 
         $model
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getItem')
-            ->will($this->returnValue($this->item));
+            ->willReturn($this->item);
 
         return $model;
     }
@@ -128,14 +130,14 @@ class BootListenerTest extends TestCase
 
 
         $attribute
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getDateTimeFormatString')
-            ->will($this->returnValue($format));
+            ->willReturn($format);
 
         $this->item
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getAttribute')
-            ->will($this->returnValue($attribute));
+            ->willReturn($attribute);
 
         return $attribute;
     }
@@ -149,7 +151,7 @@ class BootListenerTest extends TestCase
     public function it_is_initializable()
     {
         $subscriber = new BootListener();
-        $this->assertInstanceOf(BootListener::class, $subscriber);
+        self::assertInstanceOf(BootListener::class, $subscriber);
     }
 
     /**
@@ -202,9 +204,9 @@ class BootListenerTest extends TestCase
 
         $attribute = $this->mockAttribute($format);
         $attribute
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('valueToWidget')
-            ->will($this->returnValue($timestamp));
+            ->willReturn($timestamp);
 
         $model = $this->mockModelWithAttribute($attribute);
 
@@ -214,7 +216,7 @@ class BootListenerTest extends TestCase
 
         $this->bootSubscriber->handleEncodePropertyValueFromWidget($event);
 
-        $this->assertEquals($timestamp, $event->getValue());
+        self::assertEquals($timestamp, $event->getValue());
     }
 
     /**
@@ -233,9 +235,9 @@ class BootListenerTest extends TestCase
 
         $attribute = $this->mockAttribute($format);
         $attribute
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('widgetToValue')
-            ->will($this->returnValue($timestamp));
+            ->willReturn($timestamp);
 
         $model = $this->mockModelWithAttribute($attribute);
 
@@ -244,11 +246,11 @@ class BootListenerTest extends TestCase
         $event->setValue($timestamp);
 
         $this->eventDispatcher
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('dispatch')
             ->with(
-                $this->anything(),
-                $this->callback(
+                self::anything(),
+                self::callback(
                     function (ParseDateEvent $event) use ($value) {
                         $event->setResult($value);
 
@@ -259,6 +261,6 @@ class BootListenerTest extends TestCase
 
         $this->bootSubscriber->handleDecodePropertyValueForWidgetEvent($event);
 
-        $this->assertEquals($value, $event->getValue());
+        self::assertEquals($value, $event->getValue());
     }
 }

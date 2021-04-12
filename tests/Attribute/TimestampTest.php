@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2020 The MetaModels team.
+ * (c) 2012-2021 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,7 @@
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
- * @copyright  2012-2020 The MetaModels team.
+ * @copyright  2012-2021 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -32,6 +32,7 @@ use MetaModels\AttributeTimestampBundle\Attribute\Timestamp;
 use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 use MetaModels\MetaModel;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Contao\System;
 use Contao\Controller;
@@ -42,6 +43,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests to test class Timestamp.
+ *
+ * @covers \MetaModels\AttributeTimestampBundle\Attribute\Timestamp
  */
 class TimestampTest extends TestCase
 {
@@ -74,7 +77,7 @@ class TimestampTest extends TestCase
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->timezone = \date_default_timezone_get();
         \date_default_timezone_set('GMT');
@@ -115,7 +118,7 @@ class TimestampTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         \date_default_timezone_set($this->timezone);
     }
@@ -126,26 +129,26 @@ class TimestampTest extends TestCase
      * @param string $language         The language.
      * @param string $fallbackLanguage The fallback language.
      *
-     * @return IMetaModel|\PHPUnit_Framework_MockObject_MockObject
+     * @return IMetaModel|MockObject
      */
     protected function mockMetaModel($language, $fallbackLanguage)
     {
         $metaModel = $this->getMockBuilder(MetaModel::class)->setMethods([])->setConstructorArgs([[]])->getMock();
 
         $metaModel
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getTableName')
-            ->will($this->returnValue('mm_unittest'));
+            ->willReturn('mm_unittest');
 
         $metaModel
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getActiveLanguage')
-            ->will($this->returnValue($language));
+            ->willReturn($language);
 
         $metaModel
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getFallbackLanguage')
-            ->will($this->returnValue($fallbackLanguage));
+            ->willReturn($fallbackLanguage);
 
         return $metaModel;
     }
@@ -153,7 +156,7 @@ class TimestampTest extends TestCase
     /**
      * Mock the database connection.
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject|Connection
+     * @return MockObject|Connection
      */
     private function mockConnection()
     {
@@ -212,7 +215,7 @@ class TimestampTest extends TestCase
      *
      * @param Connection $connection The database connection mock.
      *
-     * @return TableManipulator|\PHPUnit_Framework_MockObject_MockObject
+     * @return TableManipulator|MockObject
      */
     private function mockTableManipulator(Connection $connection)
     {
@@ -232,7 +235,7 @@ class TimestampTest extends TestCase
         $manipulator = $this->mockTableManipulator($connection);
         $dispatcher  = $this->getMockBuilder(EventDispatcherInterface::class)->getMockForAbstractClass();
         $attribute   = new Timestamp($this->mockMetaModel('en', 'en'), [], $connection, $manipulator, $dispatcher);
-        $this->assertInstanceOf(Timestamp::class, $attribute);
+        self::assertInstanceOf(Timestamp::class, $attribute);
     }
 
     /**
@@ -313,7 +316,7 @@ class TimestampTest extends TestCase
                 $this->setConfigValue('timeFormat', $format);
                 @TextField::getAttributesFromDca(['eval' => ['rgxp' => 'time']], 'test', '11:22:33');
             } catch (\OutOfBoundsException $exception) {
-                $this->markTestSkipped('Widget bug detected? See https://github.com/contao/core/pull/7721');
+                self::markTestSkipped('Widget bug detected? See https://github.com/contao/core/pull/7721');
                 return;
             }
         }
@@ -360,18 +363,18 @@ class TimestampTest extends TestCase
             ->getMock();
 
         $widget
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getPost')
-            ->will($this->returnValue($value));
+            ->willReturn($value);
 
         /** @var TextField $widget */
         $widget->validate();
 
         $text = $widget->value;
-        $this->assertEquals($converted, $timeStamp);
+        self::assertEquals($converted, $timeStamp);
 
         $converted = $attribute->widgetToValue($text, 1);
-        $this->assertEquals(
+        self::assertEquals(
             \date($format, $timeStamp),
             \date($format, $converted),
             \date('d-m-Y h:i', $timeStamp) . ' <> ' . \date('d-m-Y h:i', $converted)
@@ -388,10 +391,10 @@ class TimestampTest extends TestCase
         $attribute  = $this->getAttribute(['timetype' => 'date', 'readonly' => 0]);
         $definition = $attribute->getFieldDefinition();
 
-        $this->assertArrayHasKey('datepicker', $definition['eval']);
-        $this->assertArrayHasKey('tl_class', $definition['eval']);
-        $this->assertEquals(true, $definition['eval']['datepicker']);
-        $this->assertEquals('custom_class wizard', $definition['eval']['tl_class']);
+        self::assertArrayHasKey('datepicker', $definition['eval']);
+        self::assertArrayHasKey('tl_class', $definition['eval']);
+        self::assertEquals(true, $definition['eval']['datepicker']);
+        self::assertEquals('custom_class wizard', $definition['eval']['tl_class']);
     }
 
     /**
@@ -404,8 +407,8 @@ class TimestampTest extends TestCase
         $attribute  = $this->getAttribute(['timetype' => 'date', 'readonly' => 1]);
         $definition = $attribute->getFieldDefinition();
 
-        $this->assertArrayNotHasKey('datepicker', $definition['eval']);
-        $this->assertArrayHasKey('tl_class', $definition['eval']);
-        $this->assertEquals('custom_class', $definition['eval']['tl_class']);
+        self::assertArrayNotHasKey('datepicker', $definition['eval']);
+        self::assertArrayHasKey('tl_class', $definition['eval']);
+        self::assertEquals('custom_class', $definition['eval']['tl_class']);
     }
 }
