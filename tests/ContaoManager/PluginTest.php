@@ -68,7 +68,7 @@ class PluginTest extends TestCase
 
         self::assertEquals(
             $bundleConfig->getLoadAfter(),
-            [MetaModelsCoreBundle::class, MetaModelsAttributeNumericBundle::class]
+            [MetaModelsAttributeNumericBundle::class, MetaModelsCoreBundle::class]
         );
 
         self::assertEquals($bundleConfig->getReplace(), ['metamodelsattribute_timestamp']);

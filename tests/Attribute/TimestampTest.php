@@ -86,22 +86,14 @@ class TimestampTest extends TestCase
             \define('TL_MODE', 'BE');
             $this
                 ->getMockBuilder(System::class)
-                ->setMockClassName('System')
                 ->setMethods(['import'])
                 ->disableOriginalConstructor()
                 ->getMockForAbstractClass();
             $this
                 ->getMockBuilder(Config::class)
-                ->setMockClassName('Config')
                 ->setMethods(['initialize', 'preload', 'markModified', 'save'])
                 ->disableOriginalConstructor()
                 ->getMock();
-
-            \class_alias(Controller::class, 'Controller');
-            \class_alias(Template::class, 'Template');
-            \class_alias(Widget::class, 'Widget');
-            \class_alias(Date::class, 'Date');
-            \class_alias(Validator::class, 'Validator');
 
             require_once __DIR__ . '/functions.php';
 
