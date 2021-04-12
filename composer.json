@@ -37,8 +37,9 @@
     "contao/core-bundle": "^4.9.0, <4.13.0",
     "metamodels/attribute_numeric": "^2.1",
     "metamodels/core": "^2.1",
-    "symfony/dependency-injection": "^3.4.26 || ^4.2.7",
-    "symfony/http-kernel": "^3.4.26 || ^4.2.7"
+    "symfony/dependency-injection": "4.4.*",
+    "symfony/event-dispatcher": "4.4.*",
+    "symfony/http-kernel": "~4.4.13"
   },
   "require-dev": {
     "contao/manager-plugin": "^2.1",
