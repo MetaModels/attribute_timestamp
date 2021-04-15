@@ -248,15 +248,16 @@ class BootListenerTest extends TestCase
         $this->eventDispatcher
             ->expects(self::atLeastOnce())
             ->method('dispatch')
-            ->with(
-                self::anything(),
-                self::callback(
-                    function (ParseDateEvent $event) use ($value) {
-                        $event->setResult($value);
-
-                        return true;
+            ->willReturnCallback(
+                function (ParseDateEvent $event, string $eventName) use (&$value) {
+                    switch ($eventName) {
+                        case 'contao.events.data.parse':
+                            $event->setResult($value);
+                        default:
                     }
-                )
+
+                    return true;
+                }
             );
 
         $this->bootSubscriber->handleDecodePropertyValueForWidgetEvent($event);
