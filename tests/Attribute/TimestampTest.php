@@ -25,8 +25,6 @@
 namespace MetaModels\AttributeTimestampBundle\Test\Attribute;
 
 use Contao\Config;
-use Contao\Template;
-use Contao\TextField;
 use Doctrine\DBAL\Connection;
 use MetaModels\AttributeTimestampBundle\Attribute\Timestamp;
 use MetaModels\Helper\TableManipulator;
@@ -34,11 +32,6 @@ use MetaModels\IMetaModel;
 use MetaModels\MetaModel;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Contao\System;
-use Contao\Controller;
-use Contao\Widget;
-use Contao\Date;
-use Contao\Validator;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -84,24 +77,6 @@ class TimestampTest extends TestCase
 
         if (!\defined('TL_MODE')) {
             \define('TL_MODE', 'BE');
-            $this
-                ->getMockBuilder(System::class)
-                ->setMethods(['import'])
-                ->disableOriginalConstructor()
-                ->getMockForAbstractClass();
-            $this
-                ->getMockBuilder(Config::class)
-                ->setMethods(['initialize', 'preload', 'markModified', 'save'])
-                ->disableOriginalConstructor()
-                ->getMock();
-
-            require_once __DIR__ . '/functions.php';
-
-            // Some error strings for the validator.
-            $GLOBALS['TL_LANG']['ERR']['date']        = '%s';
-            $GLOBALS['TL_LANG']['ERR']['invalidDate'] = '%s';
-            $GLOBALS['TL_LANG']['ERR']['time']        = '%s';
-            $GLOBALS['TL_LANG']['ERR']['dateTime']    = '%s';
         }
     }
 
@@ -302,36 +277,7 @@ class TimestampTest extends TestCase
      */
     public function testDateTime($type, $format, $value)
     {
-        // Detect the widget bug and mark test skipped if encountered.
-        if ($type === 'time') {
-            try {
-                $this->setConfigValue('timeFormat', $format);
-                @TextField::getAttributesFromDca(['eval' => ['rgxp' => 'time']], 'test', '11:22:33');
-            } catch (\OutOfBoundsException $exception) {
-                self::markTestSkipped('Widget bug detected? See https://github.com/contao/core/pull/7721');
-                return;
-            }
-        }
-
-        $attribute       = $this->getAttribute(['timetype' => $type]);
-        $fieldDefinition = \array_replace_recursive(
-            $attribute->getFieldDefinition(),
-            [
-                'eval'             => [
-                    'submitOnChange' => false,
-                    'allowHtml'      => false,
-                    'rte'            => false,
-                    'preserveTags'   => false,
-                    'encrypt'        => false,
-                    'nullIfEmpty'    => false,
-                    // Widget::getAttributesFromDca() checks it. Prevent undefined index error.
-                    'sql'            => ''
-                ],
-                'activeRecord'   => null,
-                'options_callback'   => null,
-                'options'            => null,
-            ]
-        );
+        $attribute = $this->getAttribute(['timetype' => $type]);
         $this->setConfigValue('dateFormat', 'd-m-Y');
         $this->setConfigValue('timeFormat', 'h:i');
         $this->setConfigValue('datimFormat', 'd-m-Y h:i');
@@ -342,30 +288,9 @@ class TimestampTest extends TestCase
         $dateTime  = new \DateTime($value, new \DateTimeZone(\date_default_timezone_get()));
         $timeStamp = $dateTime->getTimestamp();
         $converted = $attribute->valueToWidget($timeStamp);
+        $this->assertEquals($converted, $timeStamp);
 
-        $prepared = TextField::getAttributesFromDca(
-            $fieldDefinition,
-            'test',
-            $value
-        );
-
-        $widget = $this->getMockBuilder(TextField::class)
-            ->setMethods(['getPost', 'import'])
-            ->setConstructorArgs([$prepared])
-            ->getMock();
-
-        $widget
-            ->expects(self::any())
-            ->method('getPost')
-            ->willReturn($value);
-
-        /** @var TextField $widget */
-        $widget->validate();
-
-        $text = $widget->value;
-        self::assertEquals($converted, $timeStamp);
-
-        $converted = $attribute->widgetToValue($text, 1);
+        $converted = $attribute->widgetToValue($value, 1);
         self::assertEquals(
             \date($format, $timeStamp),
             \date($format, $converted),
