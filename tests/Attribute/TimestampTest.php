@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2020 The MetaModels team.
+ * (c) 2012-2021 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,7 @@
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
- * @copyright  2012-2020 The MetaModels team.
+ * @copyright  2012-2021 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -25,7 +25,6 @@
 namespace MetaModels\AttributeTimestampBundle\Test\Attribute;
 
 use Contao\Config;
-use Contao\Template;
 use Contao\TextField;
 use Doctrine\DBAL\Connection;
 use MetaModels\AttributeTimestampBundle\Attribute\Timestamp;
@@ -33,15 +32,12 @@ use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 use MetaModels\MetaModel;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Contao\System;
-use Contao\Controller;
-use Contao\Widget;
-use Contao\Date;
-use Contao\Validator;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests to test class Timestamp.
+ *
+ * @covers \MetaModels\AttributeTimestampBundle\Attribute\Timestamp
  */
 class TimestampTest extends TestCase
 {
@@ -70,43 +66,14 @@ class TimestampTest extends TestCase
      * Preserve the timezone.
      *
      * @return void
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->timezone = \date_default_timezone_get();
         \date_default_timezone_set('GMT');
 
         if (!\defined('TL_MODE')) {
             \define('TL_MODE', 'BE');
-            $this
-                ->getMockBuilder(System::class)
-                ->setMockClassName('System')
-                ->setMethods(['import'])
-                ->disableOriginalConstructor()
-                ->getMockForAbstractClass();
-            $this
-                ->getMockBuilder(Config::class)
-                ->setMockClassName('Config')
-                ->setMethods(['initialize', 'preload', 'markModified', 'save'])
-                ->disableOriginalConstructor()
-                ->getMock();
-
-            \class_alias(Controller::class, 'Controller');
-            \class_alias(Template::class, 'Template');
-            \class_alias(Widget::class, 'Widget');
-            \class_alias(Date::class, 'Date');
-            \class_alias(Validator::class, 'Validator');
-
-            require_once __DIR__ . '/functions.php';
-
-            // Some error strings for the validator.
-            $GLOBALS['TL_LANG']['ERR']['date']        = '%s';
-            $GLOBALS['TL_LANG']['ERR']['invalidDate'] = '%s';
-            $GLOBALS['TL_LANG']['ERR']['time']        = '%s';
-            $GLOBALS['TL_LANG']['ERR']['dateTime']    = '%s';
         }
     }
 
@@ -115,7 +82,7 @@ class TimestampTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         \date_default_timezone_set($this->timezone);
     }
@@ -226,7 +193,7 @@ class TimestampTest extends TestCase
      *
      * @return void
      */
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $connection  = $this->mockConnection();
         $manipulator = $this->mockTableManipulator($connection);
@@ -283,7 +250,7 @@ class TimestampTest extends TestCase
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    private function setConfigValue($key, $value)
+    private function setConfigValue($key, $value): void
     {
         if (!\in_array('set', \get_class_methods('Config'))) {
             $GLOBALS['TL_CONFIG'][$key] = $value;
@@ -305,7 +272,7 @@ class TimestampTest extends TestCase
      *
      * @dataProvider dataProvider
      */
-    public function testDateTime($type, $format, $value)
+    public function testDateTime($type, $format, $value): void
     {
         // Detect the widget bug and mark test skipped if encountered.
         if ($type === 'time') {
@@ -383,7 +350,7 @@ class TimestampTest extends TestCase
      *
      * @return void
      */
-    public function testEnableDatepickerWhenNotReadOnly()
+    public function testEnableDatepickerWhenNotReadOnly(): void
     {
         $attribute  = $this->getAttribute(['timetype' => 'date', 'readonly' => 0]);
         $definition = $attribute->getFieldDefinition();
@@ -399,7 +366,7 @@ class TimestampTest extends TestCase
      *
      * @return void
      */
-    public function testDisableDatepickerWhenReadOnly()
+    public function testDisableDatepickerWhenReadOnly(): void
     {
         $attribute  = $this->getAttribute(['timetype' => 'date', 'readonly' => 1]);
         $definition = $attribute->getFieldDefinition();

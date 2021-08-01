@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2019 The MetaModels team.
+ * (c) 2012-2021 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,8 @@
  * @package    MetaModels/attribute_timestamp
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2012-2019 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2012-2021 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -30,6 +31,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests the contao manager plugin.
+ *
+ * @covers \MetaModels\AttributeTimestampBundle\ContaoManager\Plugin
  */
 class PluginTest extends TestCase
 {
@@ -63,9 +66,9 @@ class PluginTest extends TestCase
         /** @var BundleConfig $bundleConfig */
         $bundleConfig = $bundles[0];
 
-        $this->assertEquals(
-            $bundleConfig->getLoadAfter(),
-            [MetaModelsCoreBundle::class, MetaModelsAttributeNumericBundle::class]
+        $this->assertSame(
+            [MetaModelsAttributeNumericBundle::class, MetaModelsCoreBundle::class],
+            $bundleConfig->getLoadAfter()
         );
 
         $this->assertEquals($bundleConfig->getReplace(), ['metamodelsattribute_timestamp']);
