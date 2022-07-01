@@ -31,16 +31,15 @@
     "source": "https://github.com/MetaModels/attribute_timestamp"
   },
   "require": {
-    "php": "^7.4",
-    "contao-community-alliance/dc-general": "^2.2",
-    "contao-community-alliance/contao-polyfill-bundle": "^1.1.0",
-    "contao-community-alliance/events-contao-bindings": "^4.9",
-    "contao/core-bundle": "^4.9.0, <4.13.0",
-    "metamodels/attribute_numeric": "^2.1",
-    "metamodels/core": "^2.1",
-    "symfony/dependency-injection": "^4.4.6",
-    "symfony/event-dispatcher": "^4.4.6",
-    "symfony/http-kernel": "~4.4.13"
+    "php": "^7.4 || ^8.0",
+    "contao-community-alliance/dc-general": "^2.3@dev",
+    "contao-community-alliance/events-contao-bindings": "^4.10@dev",
+    "contao/core-bundle": "^4.13.0, <5.0",
+    "metamodels/attribute_numeric": "^2.3@dev",
+    "metamodels/core": "^2.3@dev",
+    "symfony/dependency-injection": "^5.4",
+    "symfony/event-dispatcher": "^5.4",
+    "symfony/http-kernel": "^5.4"
   },
   "require-dev": {
     "contao/manager-plugin": "^2.1",
