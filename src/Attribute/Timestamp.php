@@ -105,7 +105,7 @@ class Timestamp extends Numeric
 
         if (empty($arrFieldDef['eval']['readonly'])) {
             $arrFieldDef['eval']['datepicker'] = true;
-            $arrFieldDef['eval']['tl_class']   = $arrFieldDef['eval']['tl_class'] ?? '' . ' wizard';
+            $arrFieldDef['eval']['tl_class']   = ($arrFieldDef['eval']['tl_class'] ?? '') . ' wizard';
         }
         $arrFieldDef['eval']['clear_datetime'] = ($arrOverrides['clear_datetime'] ?? null);
 
