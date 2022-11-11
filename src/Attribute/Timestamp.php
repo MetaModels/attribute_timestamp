@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2021 The MetaModels team.
+ * (c) 2012-2022 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,7 +20,7 @@
  * @author     Henry Lamorski <henry.lamorski@mailbox.org>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2021 The MetaModels team.
+ * @copyright  2012-2022 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -97,11 +97,12 @@ class Timestamp extends Numeric
      */
     public function getFieldDefinition($arrOverrides = [])
     {
-        $strDateType                      = $this->getDateTimeType();
-        $arrFieldDef                      = parent::getFieldDefinition($arrOverrides);
-        $arrFieldDef['eval']['rgxp']      = $strDateType;
+        $strDateType                 = $this->getDateTimeType();
+        $arrFieldDef                 = parent::getFieldDefinition($arrOverrides);
+        $arrFieldDef['eval']['rgxp'] = $strDateType;
+
         // Adjustment for the Contao setting to the SQL length of 10.
-        $arrFieldDef['eval']['maxlength'] = \strlen(Config::get($strDateType . 'Format')) * 2;
+        $arrFieldDef['eval']['maxlength'] = (\strlen(Config::get($strDateType . 'Format')) * 2);
 
         if (empty($arrFieldDef['eval']['readonly'])) {
             $arrFieldDef['eval']['datepicker'] = true;
