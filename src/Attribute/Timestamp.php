@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2019 The MetaModels team.
+ * (c) 2012-2022 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,7 +20,7 @@
  * @author     Henry Lamorski <henry.lamorski@mailbox.org>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2019 The MetaModels team.
+ * @copyright  2012-2022 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -101,10 +101,14 @@ class Timestamp extends Numeric
         $arrFieldDef                 = parent::getFieldDefinition($arrOverrides);
         $arrFieldDef['eval']['rgxp'] = $strDateType;
 
+        // Adjustment for the Contao setting to the SQL length of 10.
+        $arrFieldDef['eval']['maxlength'] = (\strlen(Config::get($strDateType . 'Format')) * 2);
+
         if (empty($arrFieldDef['eval']['readonly'])) {
             $arrFieldDef['eval']['datepicker'] = true;
             $arrFieldDef['eval']['tl_class']  .= ' wizard';
         }
+        $arrFieldDef['eval']['clear_datetime'] = ($arrOverrides['clear_datetime'] ?? null);
 
         return $arrFieldDef;
     }
@@ -118,6 +122,7 @@ class Timestamp extends Numeric
             parent::getAttributeSettingNames(),
             [
                 'timetype',
+                'clear_datetime'
             ]
         );
     }
@@ -138,7 +143,7 @@ class Timestamp extends Numeric
 
         if (!empty($objTemplate->raw)) {
             $event = new ParseDateEvent($objTemplate->raw, $objTemplate->format);
-            $this->dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);
+            $this->dispatcher->dispatch($event, ContaoEvents::DATE_PARSE);
             $objTemplate->parsedDate = $event->getResult();
         } else {
             $objTemplate->parsedDate = null;
@@ -202,7 +207,7 @@ class Timestamp extends Numeric
         return \array_map(
             function ($value) use ($format) {
                 $event = new ParseDateEvent($value, $format);
-                $this->dispatcher->dispatch(ContaoEvents::DATE_PARSE, $event);
+                $this->dispatcher->dispatch($event, ContaoEvents::DATE_PARSE);
 
                 return $event->getResult();
             },

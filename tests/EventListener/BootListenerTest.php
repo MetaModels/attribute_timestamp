@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2019 The MetaModels team.
+ * (c) 2012-2022 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,11 +11,9 @@
  * This project is provided in good faith and hope to be usable by anyone.
  *
  * @package    MetaModels/attribute_timestamp
- * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @author     David Molineus <david.molineus@netzmacht.de>
- * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2019 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2012-2022 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -26,6 +24,9 @@ use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\EncodePropertyValueFromWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Data\PropertyValueBagInterface;
+use ContaoCommunityAlliance\DcGeneral\DataDefinition\ContainerInterface;
+use ContaoCommunityAlliance\DcGeneral\DataDefinition\Definition\Properties\PropertyInterface;
+use ContaoCommunityAlliance\DcGeneral\DataDefinition\Definition\PropertiesDefinitionInterface;
 use ContaoCommunityAlliance\DcGeneral\EnvironmentInterface;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\AttributeTimestampBundle\Attribute\Timestamp;
@@ -38,6 +39,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This class tests the BackendSubscriber class.
+ *
+ * @covers \MetaModels\AttributeTimestampBundle\EventListener\BootListener
  */
 class BootListenerTest extends TestCase
 {
@@ -59,7 +62,7 @@ class BootListenerTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->eventDispatcher = $this->getMockForAbstractClass(EventDispatcherInterface::class);
         $this->bootSubscriber  = new BootListener();
@@ -71,16 +74,30 @@ class BootListenerTest extends TestCase
     /**
      * Mock the environment.
      *
+     * @param array $propExtra The extra data for the property.
+     *
      * @return EnvironmentInterface
      */
-    private function mockEnvironment()
+    private function mockEnvironment(array $propExtra = [])
     {
         $environment = $this->getMockForAbstractClass(EnvironmentInterface::class);
 
         $environment
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getEventDispatcher')
-            ->will($this->returnValue($this->eventDispatcher));
+            ->willReturn($this->eventDispatcher);
+        $environment
+            ->method('getDataDefinition')
+            ->willReturn($container = $this->getMockForAbstractClass(ContainerInterface::class));
+        $container
+            ->method('getPropertiesDefinition')
+            ->willReturn($properties = $this->getMockForAbstractClass(PropertiesDefinitionInterface::class));
+        $properties
+            ->method('getProperty')
+            ->willReturn($property = $this->getMockForAbstractClass(PropertyInterface::class));
+        $property
+            ->method('getExtra')
+            ->willReturn($propExtra);
 
         return $environment;
     }
@@ -98,14 +115,14 @@ class BootListenerTest extends TestCase
             $this->getMockBuilder(Model::class)->setMethods([])->setConstructorArgs([$this->item])->getMock();
 
         $model
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getProperty')
-            ->will($this->returnValue($attribute));
+            ->willReturn($attribute);
 
         $model
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getItem')
-            ->will($this->returnValue($this->item));
+            ->willReturn($this->item);
 
         return $model;
     }
@@ -128,14 +145,14 @@ class BootListenerTest extends TestCase
 
 
         $attribute
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getDateTimeFormatString')
-            ->will($this->returnValue($format));
+            ->willReturn($format);
 
         $this->item
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getAttribute')
-            ->will($this->returnValue($attribute));
+            ->willReturn($attribute);
 
         return $attribute;
     }
@@ -149,7 +166,7 @@ class BootListenerTest extends TestCase
     public function it_is_initializable()
     {
         $subscriber = new BootListener();
-        $this->assertInstanceOf(BootListener::class, $subscriber);
+        self::assertInstanceOf(BootListener::class, $subscriber);
     }
 
     /**
@@ -202,9 +219,9 @@ class BootListenerTest extends TestCase
 
         $attribute = $this->mockAttribute($format);
         $attribute
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('valueToWidget')
-            ->will($this->returnValue($timestamp));
+            ->willReturn($timestamp);
 
         $model = $this->mockModelWithAttribute($attribute);
 
@@ -214,7 +231,7 @@ class BootListenerTest extends TestCase
 
         $this->bootSubscriber->handleEncodePropertyValueFromWidget($event);
 
-        $this->assertEquals($timestamp, $event->getValue());
+        self::assertEquals($timestamp, $event->getValue());
     }
 
     /**
@@ -233,9 +250,9 @@ class BootListenerTest extends TestCase
 
         $attribute = $this->mockAttribute($format);
         $attribute
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('widgetToValue')
-            ->will($this->returnValue($timestamp));
+            ->willReturn($timestamp);
 
         $model = $this->mockModelWithAttribute($attribute);
 
@@ -244,21 +261,78 @@ class BootListenerTest extends TestCase
         $event->setValue($timestamp);
 
         $this->eventDispatcher
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('dispatch')
-            ->with(
-                $this->anything(),
-                $this->callback(
-                    function (ParseDateEvent $event) use ($value) {
-                        $event->setResult($value);
-
-                        return true;
+            ->willReturnCallback(
+                function (ParseDateEvent $event, string $eventName) use (&$value) {
+                    switch ($eventName) {
+                        case 'contao.events.data.parse':
+                            $event->setResult($value);
+                        default:
                     }
-                )
+
+                    return true;
+                }
             );
 
         $this->bootSubscriber->handleDecodePropertyValueForWidgetEvent($event);
 
-        $this->assertEquals($value, $event->getValue());
+        self::assertEquals($value, $event->getValue());
+    }
+
+    /**
+     * Provide the test sets.
+     *
+     * @return array
+     */
+    public function clearDataProvider()
+    {
+        return [
+            [
+                'expected' => '1980-11-15T00:00:00.000',
+                'format'   => 'd-m-Y',
+                'value'    => '15-11-1980',
+                'clear'    => 'time',
+            ],
+            [
+                'expected' => '1970-01-01T11:22:33.000',
+                'format'   => 'H:i:s',
+                'value'    => '11:22:33',
+                'clear'    => 'date',
+            ],
+        ];
+    }
+
+    /**
+     * The subscriber creates the date from a timestamp.
+     *
+     * @param string $expected The expected result.
+     * @param string $format   The given date format.
+     * @param string $value    The given date example.
+     * @param string $clear    The extra data.
+     *
+     * @dataProvider clearDataProvider
+     * @test
+     */
+    public function it_clears_undesired_portions_of_timestamp(
+        string $expected,
+        string $format,
+        string $value,
+        string $clear
+    ): void {
+        $valuesBag = $this->getMockForAbstractClass(PropertyValueBagInterface::class);
+        $attribute = $this->mockAttribute($format);
+        $model     = $this->mockModelWithAttribute($attribute);
+        $event     = new EncodePropertyValueFromWidgetEvent(
+            $this->mockEnvironment(['clear_datetime' => $clear]),
+            $model,
+            $valuesBag
+        );
+        $event->setProperty('date');
+        $event->setValue($value);
+
+        $this->bootSubscriber->handleEncodePropertyValueFromWidget($event);
+
+        $this->assertEquals((new \DateTime($expected))->getTimestamp(), $event->getValue());
     }
 }

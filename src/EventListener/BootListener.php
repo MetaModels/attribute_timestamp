@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2019 The MetaModels team.
+ * (c) 2012-2022 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,11 +11,9 @@
  * This project is provided in good faith and hope to be usable by anyone.
  *
  * @package    MetaModels/attribute_timestamp
- * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @author     David Molineus <david.molineus@netzmacht.de>
- * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2019 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2012-2022 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -49,10 +47,26 @@ class BootListener
         }
 
         $date = \DateTime::createFromFormat($attribute->getDateTimeFormatString(), $event->getValue());
-
-        if ($date) {
-            $event->setValue($date->getTimestamp());
+        if (!$date) {
+            return;
         }
+        $properties = $event->getEnvironment()->getDataDefinition()->getPropertiesDefinition();
+        $property   = $properties->getProperty($event->getProperty());
+        $extra      = $property->getExtra();
+        if (isset($extra['clear_datetime'])) {
+            switch ($extra['clear_datetime']) {
+                case 'time':
+                    $date->setTime(0, 0, 0);
+                    break;
+                case 'date':
+                    // 01/01/1970 start of UNIX time counting as timestamp.
+                    $date->setDate(1970, 1, 1);
+                    break;
+                default:
+            }
+        }
+
+        $event->setValue($date->getTimestamp());
     }
 
     /**
@@ -74,7 +88,7 @@ class BootListener
 
         if (\is_numeric($value)) {
             $dateEvent = new ParseDateEvent($value, $attribute->getDateTimeFormatString());
-            $dispatcher->dispatch(ContaoEvents::DATE_PARSE, $dateEvent);
+            $dispatcher->dispatch($dateEvent, ContaoEvents::DATE_PARSE);
 
             $event->setValue($dateEvent->getResult());
         }
