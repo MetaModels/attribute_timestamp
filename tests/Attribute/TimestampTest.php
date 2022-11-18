@@ -72,6 +72,7 @@ class TimestampTest extends TestCase
      */
     protected function setUp(): void
     {
+        $GLOBALS['TL_LANGUAGE'] = 'en';
         $this->timezone = \date_default_timezone_get();
         \date_default_timezone_set('GMT');
 

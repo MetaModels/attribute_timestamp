@@ -97,11 +97,12 @@ class Timestamp extends Numeric
      */
     public function getFieldDefinition($arrOverrides = [])
     {
-        $strDateType                      = $this->getDateTimeType();
-        $arrFieldDef                      = parent::getFieldDefinition($arrOverrides);
-        $arrFieldDef['eval']['rgxp']      = $strDateType;
+        $strDateType                 = $this->getDateTimeType();
+        $arrFieldDef                 = parent::getFieldDefinition($arrOverrides);
+        $arrFieldDef['eval']['rgxp'] = $strDateType;
+
         // Adjustment for the Contao setting to the SQL length of 10.
-        $arrFieldDef['eval']['maxlength'] = \strlen(Config::get($strDateType . 'Format')) * 2;
+        $arrFieldDef['eval']['maxlength'] = (\strlen(Config::get($strDateType . 'Format')) * 2);
 
         if (empty($arrFieldDef['eval']['readonly'])) {
             $arrFieldDef['eval']['datepicker'] = true;
