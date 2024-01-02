@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2020 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,12 +12,12 @@
  *
  * @package    MetaModels/attribute_timestamp
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2020 The MetaModels team.
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace MetaModels\AttributeTimestampBundle\Migration;
 
@@ -38,7 +38,7 @@ class AllowNullMigration extends AbstractMigration
      *
      * @var Connection
      */
-    private $connection;
+    private Connection $connection;
 
     /**
      * Create a new instance.
@@ -70,7 +70,7 @@ class AllowNullMigration extends AbstractMigration
      */
     public function shouldRun(): bool
     {
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
 
         if (!$schemaManager->tablesExist(['tl_metamodel', 'tl_metamodel_attribute'])) {
             return false;
@@ -100,7 +100,7 @@ class AllowNullMigration extends AbstractMigration
             }
         }
 
-        return new MigrationResult(true, 'Adjusted column(s): ' . implode(', ', $message));
+        return new MigrationResult(true, 'Adjusted column(s): ' . \implode(', ', $message));
     }
 
     /**
@@ -114,7 +114,7 @@ class AllowNullMigration extends AbstractMigration
         if (empty($langColumns)) {
             return [];
         }
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
 
         $result = [];
         foreach ($langColumns as $tableName => $tableColumnNames) {
@@ -151,8 +151,8 @@ class AllowNullMigration extends AbstractMigration
             ->leftJoin('attribute', 'tl_metamodel', 'metamodel', 'attribute.pid = metamodel.id')
             ->where('attribute.type=:type')
             ->setParameter('type', 'timestamp')
-            ->execute()
-            ->fetchAll(FetchMode::ASSOCIATIVE);
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         $result = [];
         foreach ($langColumns as $langColumn) {
@@ -175,8 +175,8 @@ class AllowNullMigration extends AbstractMigration
      */
     private function fixColumn(string $tableName, string $columnName): void
     {
-        $this->connection->query(
-            sprintf('ALTER TABLE %1$s CHANGE %1$s.%2$s %1$s.%2$s bigint(10) NULL', $tableName, $columnName)
+        $this->connection->executeQuery(
+            \sprintf('ALTER TABLE %1$s CHANGE %1$s.%2$s %1$s.%2$s bigint(10) NULL', $tableName, $columnName)
         );
     }
 }

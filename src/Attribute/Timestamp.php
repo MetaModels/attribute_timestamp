@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2022 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,7 +20,7 @@
  * @author     Henry Lamorski <henry.lamorski@mailbox.org>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2022 The MetaModels team.
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -49,7 +49,7 @@ class Timestamp extends Numeric
      *
      * @var EventDispatcherInterface
      */
-    private $dispatcher;
+    private EventDispatcherInterface $dispatcher;
 
     /**
      * Instantiate an MetaModel attribute.
@@ -78,8 +78,8 @@ class Timestamp extends Numeric
                 E_USER_DEPRECATED
             );
             // @codingStandardsIgnoreEnd
-
             $dispatcher = System::getContainer()->get('event_dispatcher');
+            assert($dispatcher instanceof EventDispatcherInterface);
         }
         $this->dispatcher = $dispatcher;
     }

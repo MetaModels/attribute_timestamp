@@ -24,8 +24,10 @@ use ContaoCommunityAlliance\Contao\Bindings\ContaoEvents;
 use ContaoCommunityAlliance\Contao\Bindings\Events\Date\ParseDateEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\DecodePropertyValueForWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\EncodePropertyValueFromWidgetEvent;
+use ContaoCommunityAlliance\DcGeneral\DataDefinition\ContainerInterface;
 use MetaModels\AttributeTimestampBundle\Attribute\Timestamp;
 use MetaModels\DcGeneral\Data\Model;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Handles event operations for timestamp attributes.
@@ -50,7 +52,11 @@ class BootListener
         if (!$date) {
             return;
         }
-        $properties = $event->getEnvironment()->getDataDefinition()->getPropertiesDefinition();
+
+        $dataDefinition = $event->getEnvironment()->getDataDefinition();
+        assert($dataDefinition instanceof ContainerInterface);
+
+        $properties = $dataDefinition->getPropertiesDefinition();
         $property   = $properties->getProperty($event->getProperty());
         $extra      = $property->getExtra();
         if (isset($extra['clear_datetime'])) {
@@ -70,7 +76,7 @@ class BootListener
     }
 
     /**
-     * Decode an timestamp attribute value for a widget value.
+     * Decode a timestamp attribute value for a widget value.
      *
      * @param DecodePropertyValueForWidgetEvent $event The subscribed event.
      *
@@ -84,7 +90,8 @@ class BootListener
         }
 
         $dispatcher = $event->getEnvironment()->getEventDispatcher();
-        $value      = $event->getValue();
+        assert($dispatcher instanceof EventDispatcherInterface);
+        $value = $event->getValue();
 
         if (\is_numeric($value)) {
             $dateEvent = new ParseDateEvent($value, $attribute->getDateTimeFormatString());

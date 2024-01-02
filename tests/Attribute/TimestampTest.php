@@ -46,14 +46,14 @@ class TimestampTest extends TestCase
      *
      * @var string
      */
-    private $timezone;
+    private string $timezone;
 
     /**
      * System columns.
      *
      * @var array
      */
-    private $systemColumns = [
+    private array $systemColumns = [
         'id',
         'pid',
         'sorting',
@@ -101,7 +101,7 @@ class TimestampTest extends TestCase
      */
     protected function mockMetaModel($language, $fallbackLanguage)
     {
-        $metaModel = $this->getMockBuilder(MetaModel::class)->setMethods([])->setConstructorArgs([[]])->getMock();
+        $metaModel = $this->getMockForAbstractClass(IMetaModel::class);
 
         $metaModel
             ->expects(self::any())
