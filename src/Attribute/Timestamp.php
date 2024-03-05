@@ -58,8 +58,8 @@ class Timestamp extends Numeric
      *
      * @param IMetaModel                    $objMetaModel     The MetaModel instance this attribute belongs to.
      * @param array                         $arrData          The information array for the attribute.
-     * @param Connection                    $connection       The database connection.
-     * @param TableManipulator              $tableManipulator Table manipulator instance.
+     * @param Connection|null               $connection       The database connection.
+     * @param TableManipulator|null         $tableManipulator Table manipulator instance.
      * @param EventDispatcherInterface|null $dispatcher       The event dispatcher.
      */
     public function __construct(
@@ -135,8 +135,8 @@ class Timestamp extends Numeric
         parent::prepareTemplate($objTemplate, $arrRowData, $objSettings);
 
         /** @var ISimple $objSettings */
-        if ($objSettings->get('timeformat')) {
-            $objTemplate->format = $objSettings->get('timeformat');
+        if (null !== ($timeFormat = $objSettings->get('timeformat'))) {
+            $objTemplate->format = $timeFormat;
         } else {
             $objTemplate->format = $this->getDateTimeFormatString();
         }

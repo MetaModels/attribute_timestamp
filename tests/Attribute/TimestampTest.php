@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2021 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,7 @@
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
- * @copyright  2012-2021 The MetaModels team.
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -137,7 +137,6 @@ class TimestampTest extends TestCase
      * Create the attribute with the given values.
      *
      * @param array           $data      The initialization array.
-     *
      * @param null|IMetaModel $metaModel The MetaModel instance.
      *
      * @return Timestamp
@@ -246,7 +245,6 @@ class TimestampTest extends TestCase
      * Set a config value.
      *
      * @param string $key   The name of the value.
-     *
      * @param mixed  $value The value.
      *
      * @return void
@@ -256,7 +254,7 @@ class TimestampTest extends TestCase
      */
     private function setConfigValue($key, $value)
     {
-        if (!\in_array('set', \get_class_methods('Config'))) {
+        if (!\in_array('set', \get_class_methods('Contao\Config'))) {
             $GLOBALS['TL_CONFIG'][$key] = $value;
         } else {
             Config::set($key, $value);
@@ -267,9 +265,7 @@ class TimestampTest extends TestCase
      * Test that the attribute can be instantiated.
      *
      * @param string $type   The date type.
-     *
      * @param string $format The format string.
-     *
      * @param string $value  The text value to use as post data.
      *
      * @return void
@@ -300,7 +296,7 @@ class TimestampTest extends TestCase
     }
 
     /**
-     * Test that the date picker get's enabled when not read only.
+     * Test that the date picker gets enabled when not read only.
      *
      * @return void
      */

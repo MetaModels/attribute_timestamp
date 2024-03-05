@@ -79,14 +79,20 @@ class MetaModelsAttributeTimestampExtensionTest extends TestCase
         $extension = new MetaModelsAttributeTimestampExtension();
         $extension->load([], $container);
 
-        // phpcs:disable
-        self::assertTrue($container->hasDefinition('metamodels.attribute_timestamp.backend.encode_property_value_from_widget_listener'));
-        $definition = $container->getDefinition('metamodels.attribute_timestamp.backend.encode_property_value_from_widget_listener');
+        self::assertTrue($container->hasDefinition(
+            'metamodels.attribute_timestamp.backend.encode_property_value_from_widget_listener'
+        ));
+        $definition = $container->getDefinition(
+            'metamodels.attribute_timestamp.backend.encode_property_value_from_widget_listener'
+        );
         self::assertCount(1, $definition->getTag('kernel.event_listener'));
 
-        self::assertTrue($container->hasDefinition('metamodels.attribute_timestamp.backend.decode_property_value_for_widget_listener'));
-        $definition = $container->getDefinition('metamodels.attribute_timestamp.backend.decode_property_value_for_widget_listener');
-        self::assertCount(1, $definition->getTag('handleDecodePropertyValueForWidgetEvent'));
-        // phpcs:enable
+        self::assertTrue($container->hasDefinition(
+            'metamodels.attribute_timestamp.backend.decode_property_value_for_widget_listener'
+        ));
+        $definition = $container->getDefinition(
+            'metamodels.attribute_timestamp.backend.decode_property_value_for_widget_listener'
+        );
+        self::assertCount(1, $definition->getTag('kernel.event_listener'));
     }
 }

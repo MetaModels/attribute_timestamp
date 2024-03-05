@@ -40,7 +40,9 @@ class MetaModelsAttributeTimestampExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
-        $typeNames                = $container->getParameter('metamodels.managed-schema-type-names');
+        $typeNames                = $container->hasParameter('metamodels.managed-schema-type-names')
+            ? $container->getParameter('metamodels.managed-schema-type-names')
+            : null;
         $managedSchemaTypeNames   = \is_array($typeNames) ? $typeNames : [];
         $managedSchemaTypeNames[] = 'timestamp';
         $container->setParameter('metamodels.managed-schema-type-names', $managedSchemaTypeNames);

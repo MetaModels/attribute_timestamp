@@ -51,7 +51,7 @@ class BootListenerTest extends TestCase
      *
      * @var BootListener
      */
-    private $bootSubscriber;
+    private BootListener $bootSubscriber;
 
     private $metaModel;
 
@@ -70,7 +70,7 @@ class BootListenerTest extends TestCase
         $this->bootSubscriber  = new BootListener();
         $this->metaModel       = $this->getMockForAbstractClass(IMetaModel::class);
         $this->item            =
-            $this->getMockBuilder(Item::class)->setMethods([])->setConstructorArgs([$this->metaModel, []])->getMock();
+            $this->getMockBuilder(Item::class)->setConstructorArgs([$this->metaModel, []])->getMock();
     }
 
     /**
@@ -114,7 +114,7 @@ class BootListenerTest extends TestCase
     private function mockModelWithAttribute($attribute)
     {
         $model =
-            $this->getMockBuilder(Model::class)->setMethods([])->setConstructorArgs([$this->item])->getMock();
+            $this->getMockBuilder(Model::class)->setConstructorArgs([$this->item])->getMock();
 
         $model
             ->expects(self::any())
@@ -140,7 +140,6 @@ class BootListenerTest extends TestCase
     {
         $attribute = $this
             ->getMockBuilder(Timestamp::class)
-            ->setMethods([])
             ->setConstructorArgs([$this->metaModel])
             ->disableOriginalConstructor()
             ->getMock();
