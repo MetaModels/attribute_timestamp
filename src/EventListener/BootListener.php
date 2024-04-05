@@ -27,6 +27,7 @@ use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\Encod
 use ContaoCommunityAlliance\DcGeneral\DataDefinition\ContainerInterface;
 use MetaModels\AttributeTimestampBundle\Attribute\Timestamp;
 use MetaModels\DcGeneral\Data\Model;
+use MetaModels\IItem;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -117,8 +118,10 @@ class BootListener
             return null;
         }
 
-        $property  = $event->getProperty();
-        $attribute = $model->getItem()->getAttribute($property);
+        $property = $event->getProperty();
+        $item     = $model->getItem();
+        assert($item instanceof IItem);
+        $attribute = $item->getAttribute($property);
 
         if ($attribute instanceof Timestamp) {
             return $attribute;
