@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2022 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,7 @@
  * @package    MetaModels/attribute_timestamp
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2022 The MetaModels team.
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -41,6 +41,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * This class tests the BackendSubscriber class.
  *
  * @covers \MetaModels\AttributeTimestampBundle\EventListener\BootListener
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class BootListenerTest extends TestCase
 {
@@ -49,7 +51,7 @@ class BootListenerTest extends TestCase
      *
      * @var BootListener
      */
-    private $bootSubscriber;
+    private BootListener $bootSubscriber;
 
     private $metaModel;
 
@@ -68,7 +70,7 @@ class BootListenerTest extends TestCase
         $this->bootSubscriber  = new BootListener();
         $this->metaModel       = $this->getMockForAbstractClass(IMetaModel::class);
         $this->item            =
-            $this->getMockBuilder(Item::class)->setMethods([])->setConstructorArgs([$this->metaModel, []])->getMock();
+            $this->getMockBuilder(Item::class)->setConstructorArgs([$this->metaModel, []])->getMock();
     }
 
     /**
@@ -112,7 +114,7 @@ class BootListenerTest extends TestCase
     private function mockModelWithAttribute($attribute)
     {
         $model =
-            $this->getMockBuilder(Model::class)->setMethods([])->setConstructorArgs([$this->item])->getMock();
+            $this->getMockBuilder(Model::class)->setConstructorArgs([$this->item])->getMock();
 
         $model
             ->expects(self::any())
@@ -138,7 +140,6 @@ class BootListenerTest extends TestCase
     {
         $attribute = $this
             ->getMockBuilder(Timestamp::class)
-            ->setMethods([])
             ->setConstructorArgs([$this->metaModel])
             ->disableOriginalConstructor()
             ->getMock();
@@ -162,11 +163,16 @@ class BootListenerTest extends TestCase
      *
      * @return void
      * @test
+     *
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+     *
+     * phpcs:disable
      */
     public function it_is_initializable()
     {
         $subscriber = new BootListener();
         self::assertInstanceOf(BootListener::class, $subscriber);
+        /** phpcs:enable */
     }
 
     /**
@@ -208,6 +214,10 @@ class BootListenerTest extends TestCase
      *
      * @dataProvider dataProvider
      * @test
+     *
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+     *
+     * phpcs:disable
      */
     public function it_parses_timestamp_for_widget($format, $value)
     {
@@ -232,6 +242,7 @@ class BootListenerTest extends TestCase
         $this->bootSubscriber->handleEncodePropertyValueFromWidget($event);
 
         self::assertEquals($timestamp, $event->getValue());
+        /** phpcs:enable */
     }
 
     /**
@@ -242,6 +253,10 @@ class BootListenerTest extends TestCase
      *
      * @dataProvider dataProvider
      * @test
+     *
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+     *
+     * phpcs:disable
      */
     public function it_creates_timestamp_from_widget_value($format, $value)
     {
@@ -271,13 +286,14 @@ class BootListenerTest extends TestCase
                         default:
                     }
 
-                    return true;
+                    return $event;
                 }
             );
 
         $this->bootSubscriber->handleDecodePropertyValueForWidgetEvent($event);
 
         self::assertEquals($value, $event->getValue());
+        /** phpcs:enable */
     }
 
     /**
@@ -313,6 +329,10 @@ class BootListenerTest extends TestCase
      *
      * @dataProvider clearDataProvider
      * @test
+     *
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+     *
+     * phpcs:disable
      */
     public function it_clears_undesired_portions_of_timestamp(
         string $expected,
@@ -334,5 +354,6 @@ class BootListenerTest extends TestCase
         $this->bootSubscriber->handleEncodePropertyValueFromWidget($event);
 
         $this->assertEquals((new \DateTime($expected))->getTimestamp(), $event->getValue());
+        /** phpcs:enable */
     }
 }
