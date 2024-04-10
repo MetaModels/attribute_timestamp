@@ -286,7 +286,7 @@ class BootListenerTest extends TestCase
                         default:
                     }
 
-                    return true;
+                    return $event;
                 }
             );
 
