@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="src/Resources/translations/tl_metamodel_rendersetting.en.xlf">
+    <body>
+      <trans-unit id="clear_datetime.label" resname="clear_datetime.label">
+        <source>Date and time handling</source>
+      </trans-unit>
+      <trans-unit id="clear_datetime.description" resname="clear_datetime.description">
+        <source>Here you can define which portions of the timestamp shall be saved. This can be important for correct filtering, for example.</source>
+      </trans-unit>
+      <trans-unit id="clear_datetime_options.time" resname="clear_datetime_options.time">
+        <source>Store only date and clear time</source>
+      </trans-unit>
+      <trans-unit id="clear_datetime_options.date" resname="clear_datetime_options.date">
+        <source>Store only time and clear date</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

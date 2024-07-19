@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2020 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,7 +18,7 @@
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2020 The MetaModels team.
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -31,17 +31,22 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['timestamp extends 
 ];
 
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['timetype'] = [
-    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetype'],
-    'exclude'   => true,
-    'inputType' => 'select',
-    'reference' => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['timetypeOptions'],
-    'options'   => [
+    'label'       => 'timetype.label',
+    'description' => 'timetype.description',
+    'exclude'     => true,
+    'inputType'   => 'select',
+    'options'     => [
         'date',
         'datim',
         'time',
     ],
-    'sql'       => 'varchar(64) NOT NULL default \'\'',
-    'eval'      => [
+    'reference'   => [
+        'date'  => 'timetypeOptions.date',
+        'datim' => 'timetypeOptions.datim',
+        'time'  => 'timetypeOptions.time',
+    ],
+    'sql'         => 'varchar(64) NOT NULL default \'\'',
+    'eval'        => [
         'doNotSaveEmpty' => true,
         'tl_class'       => 'w50',
     ],

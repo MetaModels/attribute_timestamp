@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="src/Resources/translations/tl_metamodel_rendersetting.en.xlf">
+    <body>
+      <trans-unit id="timesettings_legend" resname="timesettings_legend">
+        <source>Date and time settings</source>
+      </trans-unit>
+      <trans-unit id="timeformat.label" resname="timeformat.label">
+        <source>Format</source>
+      </trans-unit>
+      <trans-unit id="timeformat.description" resname="timeformat.description">
+        <source>Here you can define a custom date format. If empty, the default will be used. The format string will be parsed with the PHP date() function.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
