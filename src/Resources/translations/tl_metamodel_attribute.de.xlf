@@ -1,0 +1,34 @@
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="src/Resources/translations/tl_metamodel_attribute.en.xlf" target-language="de">
+    <body>
+      <trans-unit id="typeOptions.timestamp" resname="typeOptions.timestamp">
+        <source>Date</source>
+        <target>Datum</target>
+      </trans-unit>
+      <trans-unit id="timesettings_legend" resname="timesettings_legend">
+        <source>Date and time</source>
+        <target>Datum und Uhrzeit</target>
+      </trans-unit>
+      <trans-unit id="timetype.label" resname="timetype.label">
+        <source>Schema</source>
+        <target>Schema</target>
+      </trans-unit>
+      <trans-unit id="timetype.description" resname="timetype.description">
+        <source>Here you can select the desired scheme.</source>
+        <target>Hier können die das gewünschte Schema auswählen.</target>
+      </trans-unit>
+      <trans-unit id="timetypeOptions.date" resname="timetypeOptions.date">
+        <source>Date</source>
+        <target>Datum</target>
+      </trans-unit>
+      <trans-unit id="timetypeOptions.datim" resname="timetypeOptions.datim">
+        <source>Date and time</source>
+        <target>Datum und Uhrzeit</target>
+      </trans-unit>
+      <trans-unit id="timetypeOptions.time" resname="timetypeOptions.time">
+        <source>Time</source>
+        <target>Zeit</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
