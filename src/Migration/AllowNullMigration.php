@@ -118,6 +118,10 @@ class AllowNullMigration extends AbstractMigration
 
         $result = [];
         foreach ($langColumns as $tableName => $tableColumnNames) {
+            if (!$schemaManager->tablesExist([$tableName])) {
+                continue;
+            }
+
             $columns = $schemaManager->listTableColumns($tableName);
             foreach ($tableColumnNames as $tableColumnName) {
                 $column = ($columns[$tableColumnName] ?? null);
