@@ -24,7 +24,15 @@ namespace MetaModels\AttributeTimestampBundle\Migration;
 use Contao\CoreBundle\Migration\AbstractMigration;
 use Contao\CoreBundle\Migration\MigrationResult;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\FetchMode;
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\SchemaException;
+
+use function array_intersect;
+use function array_map;
+use function array_values;
+use function count;
+use function implode;
 
 /**
  * This migration changes all database columns to allow null values.
@@ -45,6 +53,10 @@ class AllowNullMigration extends AbstractMigration
      *
      * @param Connection $connection The database connection.
      */
+
+    /** @var list<string> */
+    private array $existsCache = [];
+
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
@@ -70,9 +82,7 @@ class AllowNullMigration extends AbstractMigration
      */
     public function shouldRun(): bool
     {
-        $schemaManager = $this->connection->createSchemaManager();
-
-        if (!$schemaManager->tablesExist(['tl_metamodel', 'tl_metamodel_attribute'])) {
+        if (!$this->tablesExist(['tl_metamodel', 'tl_metamodel_attribute'])) {
             return false;
         }
 
@@ -93,14 +103,14 @@ class AllowNullMigration extends AbstractMigration
     {
         $langColumns = $this->fetchNonNullableColumns();
         $message     = [];
-        foreach ($langColumns as $tableName => $tableColumnNames) {
-            foreach ($tableColumnNames as $tableColumnName) {
-                $this->fixColumn($tableName, $tableColumnName);
-                $message[] = $tableName . '.' . $tableColumnName;
+        foreach ($langColumns as $tableName => $tableColumns) {
+            foreach ($tableColumns as $tableColumn) {
+                $this->fixColumn($tableName, $tableColumn);
+                $message[] = $tableName . '.' . $tableColumn->getName();
             }
         }
 
-        return new MigrationResult(true, 'Adjusted column(s): ' . \implode(', ', $message));
+        return new MigrationResult(true, 'Adjusted column(s): ' . implode(', ', $message));
     }
 
     /**
@@ -118,7 +128,17 @@ class AllowNullMigration extends AbstractMigration
 
         $result = [];
         foreach ($langColumns as $tableName => $tableColumnNames) {
-            $columns = $schemaManager->listTableColumns($tableName);
+            if (!$this->tablesExist([$tableName])) {
+                continue;
+            }
+
+            /** @var Column[] $columns */
+            $columns = [];
+            // The schema manager return the column list with lowercase keys, wo got to use the real names.
+            $table = $schemaManager->introspectTable($tableName);
+            foreach ($table->getColumns() as $column) {
+                $columns[$column->getName()] = $column;
+            }
             foreach ($tableColumnNames as $tableColumnName) {
                 $column = ($columns[$tableColumnName] ?? null);
                 if (null === $column) {
@@ -128,7 +148,7 @@ class AllowNullMigration extends AbstractMigration
                     if (!isset($result[$tableName])) {
                         $result[$tableName] = [];
                     }
-                    $result[$tableName][] = $tableColumnName;
+                    $result[$tableName][] = $column;
                 }
             }
         }
@@ -168,15 +188,41 @@ class AllowNullMigration extends AbstractMigration
     /**
      * Fix a table column.
      *
-     * @param string $tableName  The name of the table.
-     * @param string $columnName The name of the column.
+     * @param string $tableName The name of the table.
+     * @param Column $column    The column.
      *
      * @return void
+     *
+     * @throws Exception
+     * @throws SchemaException
      */
-    private function fixColumn(string $tableName, string $columnName): void
+    private function fixColumn(string $tableName, Column $column): void
     {
-        $this->connection->executeQuery(
-            \sprintf('ALTER TABLE %1$s CHANGE %1$s.%2$s %1$s.%2$s bigint(10) NULL', $tableName, $columnName)
-        );
+        $manager = $this->connection->createSchemaManager();
+        $table   = $manager->introspectTable($tableName);
+        $updated = $manager->introspectTable($tableName);
+
+        $updated->getColumn($column->getName())
+            ->setNotnull(false)
+            ->setDefault(null);
+
+        $tableDiff = $manager->createComparator()->compareTables($table, $updated);
+
+        $manager->alterTable($tableDiff);
+
+        $this->connection->createQueryBuilder()
+            ->update($tableName, 't')
+            ->set('t.' . $column->getName(), 'null')
+            ->where('t.' . $column->getName() . ' = ""')
+            ->executeQuery();
+    }
+
+    private function tablesExist(array $tableNames): bool
+    {
+        if ([] === $this->existsCache) {
+            $this->existsCache = array_values($this->connection->createSchemaManager()->listTableNames());
+        }
+
+        return count($tableNames) === count(array_intersect($tableNames, array_map('strtolower', $this->existsCache)));
     }
 }
