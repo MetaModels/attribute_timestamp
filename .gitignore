@@ -2,13 +2,14 @@
 .DS_Store
 Thumbs.db
 
-# IDEs 
+# IDEs
 .buildpath
 .project
 .settings/
 .build/
 .external*/
 .idea/
+.phpcq/
 nbproject/
 
 # composer related

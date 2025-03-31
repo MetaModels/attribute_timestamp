@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_timestamp.
  *
- * (c) 2012-2022 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,7 +20,7 @@
  * @author     Henry Lamorski <henry.lamorski@mailbox.org>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2022 The MetaModels team.
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_timestamp/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -49,7 +49,7 @@ class Timestamp extends Numeric
      *
      * @var EventDispatcherInterface
      */
-    private $dispatcher;
+    private EventDispatcherInterface $dispatcher;
 
     /**
      * Instantiate an MetaModel attribute.
@@ -58,8 +58,8 @@ class Timestamp extends Numeric
      *
      * @param IMetaModel                    $objMetaModel     The MetaModel instance this attribute belongs to.
      * @param array                         $arrData          The information array for the attribute.
-     * @param Connection                    $connection       The database connection.
-     * @param TableManipulator              $tableManipulator Table manipulator instance.
+     * @param Connection|null               $connection       The database connection.
+     * @param TableManipulator|null         $tableManipulator Table manipulator instance.
      * @param EventDispatcherInterface|null $dispatcher       The event dispatcher.
      */
     public function __construct(
@@ -78,8 +78,8 @@ class Timestamp extends Numeric
                 E_USER_DEPRECATED
             );
             // @codingStandardsIgnoreEnd
-
             $dispatcher = System::getContainer()->get('event_dispatcher');
+            assert($dispatcher instanceof EventDispatcherInterface);
         }
         $this->dispatcher = $dispatcher;
     }
@@ -106,7 +106,7 @@ class Timestamp extends Numeric
 
         if (empty($arrFieldDef['eval']['readonly'])) {
             $arrFieldDef['eval']['datepicker'] = true;
-            $arrFieldDef['eval']['tl_class']  .= ' wizard';
+            $arrFieldDef['eval']['tl_class']   = ($arrFieldDef['eval']['tl_class'] ?? '') . ' wizard';
         }
         $arrFieldDef['eval']['clear_datetime'] = ($arrOverrides['clear_datetime'] ?? null);
 
@@ -135,8 +135,8 @@ class Timestamp extends Numeric
         parent::prepareTemplate($objTemplate, $arrRowData, $objSettings);
 
         /** @var ISimple $objSettings */
-        if ($objSettings->get('timeformat')) {
-            $objTemplate->format = $objSettings->get('timeformat');
+        if (null !== ($timeFormat = $objSettings->get('timeformat'))) {
+            $objTemplate->format = $timeFormat;
         } else {
             $objTemplate->format = $this->getDateTimeFormatString();
         }
